@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Good Life Exercise — ここ晴れ大学</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-dark: #085041;
+    --teal-mid: #1D9E75;
+    --teal-light: #9FE1CB;
+    --teal-pale: #e1f5ee;
+    --teal-softer: #f0faf6;
+    --amber: #EF9F27;
+    --amber-pale: #faeeda;
+    --text-dark: #1a1a1a;
+    --text-mid: #4a5568;
+    --text-light: #8a9ab0;
+    --border: rgba(0,0,0,0.08);
+    --white: #ffffff;
+    --bg: #f7faf9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: var(--teal-dark);
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--teal-light);
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    max-width: 400px;
+    margin: 16px auto 0;
+    font-weight: 300;
+  }
+
+  .hero-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    background: rgba(255,255,255,0.08);
+    border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .hero-time span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    display: inline-block;
+  }
+
+  .progress-wrap {
+    background: var(--teal-dark);
+    padding: 0 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 0.5px solid rgba(255,255,255,0.08);
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal-light), var(--amber));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 6px;
+    padding-top: 12px;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .section {
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s forwards;
+  }
+
+  .section:nth-child(1) { animation-delay: 0.1s; }
+  .section:nth-child(2) { animation-delay: 0.2s; }
+  .section:nth-child(3) { animation-delay: 0.3s; }
+  .section:nth-child(4) { animation-delay: 0.4s; }
+  .section:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    border: 0.5px solid var(--border);
+    padding: 1.75rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-mid);
+    font-weight: 500;
+  }
+
+  .step-title {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .step-desc {
+    font-size: 13.5px;
+    color: var(--text-mid);
+    margin-bottom: 16px;
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  .tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    padding: 7px 16px;
+    border-radius: 24px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 0.5px solid var(--border);
+    background: var(--bg);
+    color: var(--text-mid);
+    transition: all 0.18s ease;
+    user-select: none;
+    font-weight: 400;
+  }
+
+  .tag:hover {
+    border-color: var(--teal-light);
+    background: var(--teal-softer);
+    color: var(--teal-dark);
+  }
+
+  .tag.on {
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+    border-color: var(--teal-mid);
+    font-weight: 500;
+  }
+
+  .q-block {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 10px;
+  }
+
+  .q-label {
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  textarea {
+    width: 100%;
+    border: 0.5px solid rgba(0,0,0,0.12);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: var(--white);
+    resize: vertical;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    line-height: 1.7;
+    font-weight: 300;
+    transition: border-color 0.15s;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--teal-mid);
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.08);
+  }
+
+  .slider-group { margin-bottom: 14px; }
+
+  .slider-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+
+  .slider-name {
+    font-size: 13.5px;
+    color: var(--text-dark);
+    font-weight: 400;
+  }
+
+  .slider-val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal-mid);
+    min-width: 20px;
+    text-align: right;
+  }
+
+  input[type=range] {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #e2e8f0;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--teal-mid);
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.15);
+    transition: transform 0.15s;
+  }
+
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+
+  .slider-ends {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  .divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 2rem 0;
+  }
+
+  .final-card {
+    background: var(--teal-dark);
+    border-radius: 16px;
+    padding: 2rem;
+    color: white;
+  }
+
+  .final-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 10px;
+  }
+
+  .final-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: white;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .final-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 16px;
+    font-weight: 300;
+    line-height: 1.75;
+  }
+
+  .final-card textarea {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.15);
+    color: white;
+    font-weight: 300;
+  }
+
+  .final-card textarea::placeholder { color: rgba(255,255,255,0.3); }
+  .final-card textarea:focus {
+    border-color: var(--teal-light);
+    box-shadow: 0 0 0 3px rgba(159,225,203,0.1);
+  }
+
+  .hint-btn {
+    margin-top: 14px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(255,255,255,0.25);
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hint-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  .hint-btn svg {
+    width: 14px; height: 14px;
+    transition: transform 0.2s;
+  }
+
+  .hint-btn.open svg { transform: rotate(180deg); }
+
+  .insight-box {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: none;
+  }
+
+  .insight-box.show { display: block; animation: fadeUp 0.3s forwards; }
+
+  .quote-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+
+  .quote-item:last-child { margin-bottom: 0; }
+
+  .quote-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  .quote-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  .quote-author {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 3px;
+  }
+
+  .closing-line {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 0.5px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+    line-height: 1.7;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  .action-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-copy {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-copy:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.5);
+  }
+
+  .btn-print {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: var(--white);
+    color: var(--text-mid);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-print:hover {
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+    border-color: var(--teal-light);
+  }
+
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--text-light);
+    border-top: 0.5px solid var(--border);
+    letter-spacing: 0.05em;
+  }
+
+  .footer strong {
+    color: var(--teal-mid);
+    font-weight: 500;
+  }
+
+  @media (max-width: 480px) {
+    .hero { padding: 3rem 1.5rem 2rem; }
+    .container { padding: 1.5rem 1rem 3rem; }
+    .card { padding: 1.25rem; }
+  }
+
+  @media print {
+    .progress-wrap, .hint-btn, .action-row { display: none; }
+    .hero { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .final-card { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .section { opacity: 1; transform: none; animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">ここ晴れ大学 — ポジティブ心理学講座</div>
+  <h1 class="hero-title">The <em>Good Life</em><br>Exercise</h1>
+  <p class="hero-sub">答えを出すためのワークではありません。自分でも知らなかった「本音」を引き出すための時間です。</p>
+  <div class="hero-time"><span></span> 所要時間：10〜15分</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>進捗</span>
+    <span id="pct">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="card">
+      <div class="step-badge">
+        <div class="step-num">1</div>
+        <div class="step-label">直感チェック</div>
+      </div>
+      <div class="step-title">体で感じる——「良い人生」に心が動くものは？</div>
+      <div class="step-desc">考えすぎずに、パッと選んでみてください。直感が大事です。（複数OK）</div>
+      <div class="tag-grid" id="tagGrid">
+        <div class="tag" onclick="toggleTag(this)">自由な時間</div>
+        <div class="tag" onclick="toggleTag(this)">深い人間関係</div>
+        <div class="tag" onclick="toggleTag(this)">お金の余裕</div>
+        <div class="tag" onclick="toggleTag(this)">やりがいのある仕事</div>
+        <div class="tag" onclick="toggleTag(this)">健康な体</div>
+        <div class="tag" onclick="toggleTag(this)">成長し続けること</div>
+        <div class="tag" onclick="toggleTag(this)">穏やかな毎日</div>
+        <div class="tag" onclick="toggleTag(this)">冒険と刺激</div>
+        <div class="tag" onclick="toggleTag(this)">誰かの役に立つこと</div>
+        <div class="tag" onclick="toggleTag(this)">創造すること</div>
+        <div class="tag" onclick="toggleTag(this)">愛すること・愛されること</div>
+        <div class="tag" onclick="toggleTag(this)">信仰・精神的な豊かさ</div>
+        <div class="tag" onclick="toggleTag(this)">笑いと楽しさ</div>
+        <div class="tag" onclick="toggleTag(this)">自分らしくいること</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <div class="step-badge">
+        <div class="step-num">2</div>
+        <div class="step-label">記憶を掘る</div>
+      </div>
+      <div class="step-title">「あのとき」を思い出す</div>
+      <div class="step-desc">これまでの人生で「ああ、生きていてよかった」と思った瞬間を1つ思い浮かべてください。</div>
+      <div class="q-block">
+        <div class="q-label">それはいつ、どんな場面でしたか？</div>
+        <textarea rows="2" placeholder="例：友人と夜中まで語り合ったとき…" oninput="updateProgress()"></textarea>
+      </div>
+      <div class="q-block">
+        <div class="q-label">そのとき、何が「そこにあった」から、そう感じたのだと思いますか？</div>
+        <textarea rows="2" placeholder="例：本音を話せた、何かを成し遂げた、ただそこにいるだけでよかった…" oninput="updateProgress()"></textarea>
+      </div>
+      <div class="q-block">
+        <div class="q-label">その瞬間から、「良い人生」についてどんなことが見えてきますか？</div>
+        <textarea rows="2" placeholder="自由に書いてみてください…" oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <div class="step-badge">
+        <div class="step-num">3</div>
+        <div class="step-label">今を測る</div>
+      </div>
+      <div class="step-title">ウェルビーイングスコア——今の自分を直感でチェック</div>
+      <div class="step-desc">正解はありません。「差」や「気になるところ」に注目してみてください。</div>
+
+      <div class="slider-group">
+        <div class="slider-top">
+          <span class="slider-name">ポジティブな感情（喜び・感謝・安らぎ）</span>
+          <span class="slider-val" id="v1">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" step="1" oninput="updateSlider(this,'v1')">
+        <div class="slider-ends"><span>低い</span><span>高い</span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-top">
+          <span class="slider-name">没頭・エンゲージメント（夢中になれること）</span>
+          <span class="slider-val" id="v2">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" step="1" oninput="updateSlider(this,'v2')">
+        <div class="slider-ends"><span>低い</span><span>高い</span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-top">
+          <span class="slider-name">人間関係・つながり（深さと温かさ）</span>
+          <span class="slider-val" id="v3">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" step="1" oninput="updateSlider(this,'v3')">
+        <div class="slider-ends"><span>低い</span><span>高い</span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-top">
+          <span class="slider-name">意味・目的（なぜ生きるかの感覚）</span>
+          <span class="slider-val" id="v4">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" step="1" oninput="updateSlider(this,'v4')">
+        <div class="slider-ends"><span>低い</span><span>高い</span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-top">
+          <span class="slider-name">達成・成長（できるようになっている実感）</span>
+          <span class="slider-val" id="v5">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" step="1" oninput="updateSlider(this,'v5')">
+        <div class="slider-ends"><span>低い</span><span>高い</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <div class="step-badge">
+        <div class="step-num">4</div>
+        <div class="step-label">ギャップを見る</div>
+      </div>
+      <div class="step-title">理想と現実——大切なのに、足りていないものは？</div>
+      <div class="step-desc">ステップ1で選んだものと、ステップ3のスコアを見比べてみてください。</div>
+      <div class="q-block">
+        <div class="q-label">「大切なはずなのに、今の生活で足りていないもの」は何ですか？</div>
+        <textarea rows="2" placeholder="正直に書いてみましょう…" oninput="updateProgress()"></textarea>
+      </div>
+      <div class="q-block">
+        <div class="q-label">それが足りない理由として、思い当たることはありますか？</div>
+        <textarea rows="2" placeholder="環境、習慣、思い込み、何かを後回しにしている…など" oninput="updateProgress()"></textarea>
+      </div>
+      <div class="q-block">
+        <div class="q-label">もしその1つを少しだけ増やすとしたら、明日から何ができそうですか？</div>
+        <textarea rows="2" placeholder="小さくていい。「〇〇を週1回する」くらいから…" oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="final-card">
+      <div class="final-eyebrow">最後のステップ</div>
+      <h2 class="final-title">今日の気づきをシェアしよう</h2>
+      <div class="final-desc">ワークを通じて気づいたこと、驚いたこと、もやっとしたこと——なんでも。提出部屋に書いてみてください。</div>
+
+      <button class="hint-btn" id="hintBtn" onclick="toggleInsight()">
+        哲学者たちのことばを見る
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <div class="insight-box" id="insightBox">
+        <div class="quote-item">
+          <div class="quote-dot"></div>
+          <div>
+            <div class="quote-text">「良い人生とは、理性・情熱・欲望の3つがバランスよく機能することだ。翼は美・知恵・勇気・善に触れることで育つ。」</div>
+            <div class="quote-author">— プラトン（紀元前427〜347）</div>
+          </div>
+        </div>
+        <div class="quote-item">
+          <div class="quote-dot"></div>
+          <div>
+            <div class="quote-text">「私たちが苦しむのは、人生の出来事そのものではなく、それに対する自分の判断によってだ。」</div>
+            <div class="quote-author">— エピクテトス（紀元50〜135）</div>
+          </div>
+        </div>
+        <div class="quote-item">
+          <div class="quote-dot"></div>
+          <div>
+            <div class="quote-text">「私たちが感じる喜びは、人生の状況とはほとんど関係がない。すべては、人生のどこに心を向けるか——それにかかっている。」</div>
+            <div class="quote-author">— ラッセル・M・ネルソン（2016年）</div>
+          </div>
+        </div>
+        <div class="closing-line">あなたが今日書いたことの中に、すでにあなただけの答えがある。</div>
+      </div>
+
+      <a href="https://fants.jp/menus/47441" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:block; margin-top:20px;">
+        <button class="hint-btn" style="width:100%; justify-content:center; padding: 14px 20px; font-size:15px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+          提出部屋へ　→
+        </button>
+      </a>
+      <div style="margin-top:10px; font-size:12px; color:rgba(255,255,255,0.4); text-align:center; line-height:1.7;">
+        提出部屋が開きます。気づきを自由に書いて投稿してください 🌤
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>ここ晴れ大学</strong> — ポジティブ心理学講座 &nbsp;|&nbsp; 坂井真紀
+</div>
+
+<script>
+function saveInsightCard() {
+  const text = document.getElementById('insightText').value.trim();
+  if (!text) {
+    document.getElementById('saveCardLabel').textContent = '気づきを入力してください';
+    setTimeout(() => {
+      document.getElementById('saveCardLabel').textContent = '提出する';
+    }, 2000);
+    return;
+  }
+
+  const date = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const canvas = document.createElement('canvas');
+  const scale = 2;
+  canvas.width = 800 * scale;
+  canvas.height = 500 * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+
+  const grad = ctx.createLinearGradient(0, 0, 800, 500);
+  grad.addColorStop(0, '#085041');
+  grad.addColorStop(1, '#0f6e56');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, 800, 500, 24);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  ctx.beginPath();
+  ctx.arc(680, 80, 160, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(100, 420, 120, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(159,225,203,0.9)';
+  ctx.font = '500 13px sans-serif';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('ここ晴れ大学  ✦  ポジティブ心理学講座', 60, 70);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.font = '300 15px sans-serif';
+  ctx.fillText('The Good Life Exercise', 60, 100);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fillRect(60, 125, 680, 0.5);
+
+  ctx.fillStyle = 'rgba(159,225,203,0.8)';
+  ctx.font = '400 14px sans-serif';
+  ctx.fillText('今日の気づき', 60, 165);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.font = '300 60px serif';
+  ctx.fillText('"', 48, 230);
+
+  const maxWidth = 640;
+  const lineHeight = 46;
+  const fontSize = text.length > 40 ? 28 : text.length > 20 ? 32 : 36;
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `400 ${fontSize}px sans-serif`;
+
+  const words = text.split('');
+  let line = '';
+  let y = 250;
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line + words[i];
+    if (ctx.measureText(testLine).width > maxWidth && line !== '') {
+      ctx.fillText(line, 80, y);
+      line = words[i];
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, 80, y);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fillRect(60, 430, 680, 0.5);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.45)';
+  ctx.font = '300 13px sans-serif';
+  ctx.fillText(date, 60, 460);
+
+  ctx.fillStyle = 'rgba(159,225,203,0.6)';
+  ctx.font = '300 13px sans-serif';
+  ctx.fillText('kokohare.university', 620, 460);
+
+  const imgData = canvas.toDataURL('image/png');
+
+  const preview = document.getElementById('cardPreview');
+  preview.style.display = 'block';
+  preview.innerHTML = `
+    <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:10px;">📸 画像を長押しして「写真に保存」→ 提出部屋に投稿してね！</div>
+    <img src="${imgData}" style="max-width:100%; border-radius:12px; display:block; margin:0 auto;" alt="気づきカード">
+  `;
+
+  navigator.clipboard.writeText(text).catch(() => {});
+
+  document.getElementById('saveCardLabel').textContent = '提出部屋を開いています...';
+
+  const link = document.createElement('a');
+  link.href = 'https://fants.jp/menus/47441';
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  setTimeout(() => {
+    document.getElementById('saveCardLabel').textContent = '提出する';
+  }, 2000);
+}
+
+function toggleTag(el) {
+  el.classList.toggle('on');
+  updateProgress();
+}
+
+function updateSlider(el, id) {
+  document.getElementById(id).textContent = el.value;
+  updateProgress();
+}
+
+function updateProgress() {
+  const selected = document.querySelectorAll('.tag.on').length;
+  const textareas = document.querySelectorAll('textarea');
+  let filled = 0;
+  textareas.forEach(t => { if (t.value.trim().length > 5) filled++; });
+  const tagScore = Math.min(selected / 3, 1) * 35;
+  const textScore = (filled / textareas.length) * 65;
+  const total = Math.round(tagScore + textScore);
+  const pct = Math.min(total, 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('pct').textContent = pct + '%';
+}
+
+function toggleInsight() {
+  const box = document.getElementById('insightBox');
+  const btn = document.getElementById('hintBtn');
+  const isOpen = box.classList.contains('show');
+  if (isOpen) {
+    box.classList.remove('show');
+    box.style.display = 'none';
+    btn.classList.remove('open');
+  } else {
+    box.style.display = 'block';
+    setTimeout(() => box.classList.add('show'), 10);
+    btn.classList.add('open');
+  }
+}
+</script>
+</body>
+</html>
