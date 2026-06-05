@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>からだの声を聴くセルフチェック（MAIA）｜ここ晴れ大学</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Kosugi+Maru&display=swap');
+
+  :root{
+    --sky:#7ec4cf;
+    --sky-deep:#4a9aa8;
+    --leaf:#9bca7a;
+    --leaf-deep:#6ba94c;
+    --cream:#fbf7ef;
+    --paper:#ffffff;
+    --ink:#3d4a4d;
+    --ink-soft:#6c7b7e;
+    --line:#e7e0d3;
+    --sun:#f4c873;
+    --shadow:rgba(74,154,168,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Zen Maru Gothic','Kosugi Maru',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, #eaf6f4 0%, transparent 42%),
+      radial-gradient(circle at 88% 4%, #f3f8e9 0%, transparent 40%),
+      var(--cream);
+    line-height:1.85;
+    padding:0 0 80px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px;}
+
+  /* ---- header ---- */
+  header{
+    text-align:center;
+    padding:54px 18px 30px;
+    position:relative;
+  }
+  .brand{
+    display:inline-block;
+    font-size:.82rem;
+    letter-spacing:.18em;
+    color:var(--sky-deep);
+    background:#eaf6f4;
+    padding:6px 18px;
+    border-radius:999px;
+    margin-bottom:22px;
+    font-weight:700;
+  }
+  h1{
+    font-size:1.72rem;
+    font-weight:700;
+    line-height:1.5;
+    margin-bottom:14px;
+    letter-spacing:.02em;
+  }
+  h1 .turtle{display:inline-block;transform:translateY(2px);}
+  .lead{
+    font-size:.98rem;
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto;
+  }
+  .lead strong{color:var(--leaf-deep);font-weight:700;}
+
+  /* ---- intro card ---- */
+  .intro{
+    background:var(--paper);
+    border-radius:22px;
+    padding:26px 24px;
+    margin:30px 0 10px;
+    box-shadow:0 10px 30px var(--shadow);
+    border:1px solid var(--line);
+    font-size:.95rem;
+  }
+  .intro p+p{margin-top:12px;}
+  .intro .small{font-size:.82rem;color:var(--ink-soft);margin-top:16px;}
+
+  /* ---- scale legend (sticky) ---- */
+  .legend{
+    position:sticky;top:0;z-index:30;
+    background:rgba(251,247,239,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding:12px 18px;
+    margin:26px -18px 6px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:.78rem;color:var(--ink-soft);
+  }
+  .legend b{color:var(--sky-deep);}
+
+  /* ---- progress ---- */
+  .progress-shell{
+    position:sticky;top:46px;z-index:29;
+    height:5px;background:var(--line);
+    margin:0 -18px;
+  }
+  .progress-bar{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--sky),var(--leaf));
+    transition:width .3s ease;
+  }
+
+  /* ---- question ---- */
+  .q{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px 20px 16px;
+    margin:16px 0;
+    box-shadow:0 4px 14px rgba(74,154,168,.06);
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .q.answered{border-color:var(--leaf);box-shadow:0 4px 16px rgba(107,169,76,.14);}
+  .q-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .q-num{
+    flex:none;
+    width:30px;height:30px;border-radius:50%;
+    background:#eaf6f4;color:var(--sky-deep);
+    font-size:.85rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .q.answered .q-num{background:var(--leaf);color:#fff;}
+  .q-text{font-size:.97rem;padding-top:3px;}
+
+  .opts{
+    display:flex;gap:6px;justify-content:space-between;
+  }
+  .opt{flex:1;}
+  .opt input{position:absolute;opacity:0;width:0;height:0;}
+  .opt label{
+    display:flex;align-items:center;justify-content:center;
+    height:42px;border-radius:12px;
+    background:var(--cream);
+    border:1.5px solid var(--line);
+    cursor:pointer;font-size:.95rem;font-weight:500;
+    color:var(--ink-soft);
+    transition:all .15s;
+    user-select:none;
+  }
+  .opt label:hover{border-color:var(--sky);}
+  .opt input:checked+label{
+    background:var(--sky);border-color:var(--sky-deep);
+    color:#fff;font-weight:700;transform:scale(1.04);
+  }
+  .opt-ends{display:flex;justify-content:space-between;font-size:.72rem;color:var(--ink-soft);margin-top:7px;padding:0 2px;}
+
+  /* ---- button ---- */
+  .btn{
+    display:block;width:100%;
+    background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));
+    color:#fff;border:none;border-radius:16px;
+    padding:18px;font-size:1.08rem;font-weight:700;
+    font-family:inherit;cursor:pointer;
+    margin:30px 0 10px;
+    box-shadow:0 8px 22px rgba(107,169,76,.3);
+    transition:transform .15s,box-shadow .15s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(107,169,76,.4);}
+  .btn:disabled{background:#cdd5cc;box-shadow:none;cursor:not-allowed;transform:none;}
+
+  .note-unanswered{
+    text-align:center;font-size:.85rem;color:#c98a4a;
+    margin-top:-2px;min-height:20px;
+  }
+
+  /* ---- results ---- */
+  #results{display:none;margin-top:18px;animation:fade .5s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  .res-head{text-align:center;margin-bottom:24px;}
+  .res-head h2{font-size:1.4rem;color:var(--sky-deep);margin-bottom:8px;}
+  .res-head p{font-size:.92rem;color:var(--ink-soft);}
+
+  .factor{
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:16px;padding:18px 20px;margin:14px 0;
+    box-shadow:0 4px 14px rgba(74,154,168,.06);
+  }
+  .factor-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+  .factor-name{font-weight:700;font-size:1.02rem;}
+  .factor-score{font-size:1.05rem;font-weight:700;color:var(--leaf-deep);}
+  .factor-score span{font-size:.78rem;color:var(--ink-soft);font-weight:400;}
+  .factor-desc{font-size:.85rem;color:var(--ink-soft);margin-bottom:12px;}
+  .meter{height:10px;border-radius:999px;background:var(--line);overflow:hidden;}
+  .meter-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--sky),var(--leaf));transition:width 1s ease;width:0;}
+
+  .reverse-tag{
+    font-size:.68rem;color:var(--sky-deep);background:#eaf6f4;
+    padding:2px 8px;border-radius:6px;margin-left:8px;vertical-align:middle;
+  }
+
+  .closing{
+    background:linear-gradient(135deg,#eaf6f4,#f3f8e9);
+    border-radius:20px;padding:26px 24px;margin:24px 0 10px;
+    font-size:.94rem;text-align:center;
+  }
+  .closing h3{font-size:1.05rem;margin-bottom:10px;color:var(--leaf-deep);}
+
+  .btn-ghost{
+    background:transparent;color:var(--sky-deep);
+    border:1.5px solid var(--sky);box-shadow:none;
+    margin-top:0;
+  }
+  .btn-ghost:hover{background:#eaf6f4;transform:none;box-shadow:none;}
+
+  /* ---- footer / citation ---- */
+  footer{
+    margin-top:40px;padding:24px 22px;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:16px;font-size:.78rem;color:var(--ink-soft);
+    line-height:1.7;
+  }
+  footer b{color:var(--ink);}
+  footer a{color:var(--sky-deep);word-break:break-all;}
+
+  @media(max-width:480px){
+    h1{font-size:1.42rem;}
+    .opt label{height:40px;font-size:.9rem;}
+    .q{padding:18px 15px 14px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="brand">🐢 ここ晴れ大学</span>
+    <h1>からだの声を聴く<br>セルフチェック <span class="turtle">🌱</span></h1>
+    <p class="lead">あなたは今、<strong>自分のからだの感覚</strong>に、どれくらい気づけているでしょう。32の問いを通して、そっと確かめてみましょう。</p>
+  </header>
+
+  <div class="intro">
+    <p>このチェックは <b>MAIA（内受容感覚への気づきの多次元的評価）</b> という、世界中で使われている心理尺度です。「内受容感覚（interoception）」とは、呼吸・鼓動・緊張・心地よさなど、<b>からだの内側からのサイン</b>に気づく力のこと。</p>
+    <p>この力は、感情に気づくこと、自分をいたわること、ストレスとつき合うことと、深くつながっています。<b>良い・悪いを測るテストではありません。</b>今の自分を知るための、やさしい鏡です。</p>
+    <p class="small">※ 各項目について、日常生活でどのくらい当てはまるかを 0〜5 で選んでください。結果は8つの側面ごとに自動で計算されます（このページ内だけで計算され、データはどこにも送信されません）。</p>
+  </div>
+
+  <div class="legend">
+    <span>左ほど <b>全くない</b></span>
+    <span>右ほど <b>いつもある</b></span>
+  </div>
+  <div class="progress-shell"><div class="progress-bar" id="progress"></div></div>
+
+  <form id="quiz"></form>
+
+  <div class="note-unanswered" id="noteUnanswered"></div>
+  <button class="btn" id="calcBtn">結果をみる 🌷</button>
+
+  <div id="results">
+    <div class="res-head">
+      <h2>あなたの「からだの声を聴く力」</h2>
+      <p>8つの側面を、それぞれ 0〜5 のスコアで表しています。<br>数値の高さより、<b>どの側面が今のあなたに響くか</b>を感じてみてください。</p>
+    </div>
+    <div id="factorList"></div>
+
+    <div class="closing">
+      <h3>結果をどう受け取る？ 🐢</h3>
+      <p>低い数値があっても、それは「足りない」のではなく「これから育てていける余白」です。からだの声を聴く力は、マインドフルネスやセルフ・コンパッションの実践で、ゆっくり育っていきます。一人で抱えず、ここから一緒に。</p>
+    </div>
+
+    <button class="btn btn-ghost" id="resetBtn">もう一度やってみる</button>
+  </div>
+
+  <footer>
+    <p><b>出典・引用</b></p>
+    <p>本チェックは下記の尺度をそのまま使用しています。</p>
+    <p>・Mehling WE, et al. (2012). The Multidimensional Assessment of Interoceptive Awareness (MAIA). <i>PLoS ONE</i>, 7(11), e48230.</p>
+    <p>・日本語版作成（2014）：庄子雅保・大野誠士・Beate M. Herbert・Wolf E. Mehling／日本語訳：大野誠士・今泉悠子・庄子雅保</p>
+    <p>MAIA ©2012, University of California San Francisco<br><a href="http://www.osher.ucsf.edu/maia/">http://www.osher.ucsf.edu/maia/</a></p>
+    <p style="margin-top:10px;">MAIA は書面による許可申請なく無償で使用できますが、正式名称の使用と適切な引用が求められています。スコアは下位尺度ごとに算出します（総得点は用いません）。因子2・3の一部は逆転項目として計算しています。</p>
+  </footer>
+
+</div>
+
+<script>
+// ---- 32項目（UCSF日本語版そのまま） ----
+const items = [
+ "緊張しているとき、身体のどの部分が緊張しているか気づいている",
+ "身体内に不快感があることに気づいている",
+ "身体のどの部分が心地よいか気づいている",
+ "呼吸が遅くなったり早くなったりするなどの変化に気づいている",
+ "深刻な状態になるまで、身体の緊張や不快感を無視している",
+ "不快な感覚から注意をそらしている",
+ "痛みや不快さを感じても、何とか乗り切ろうとする",
+ "身体の痛みを感じるとき、イライラする",
+ "不快さを感じると身体に何か異常があるのではないかと心配になる",
+ "不安におちいることなく、不快な身体感覚に気づくことができる",
+ "周りで起こっていることに気を散らされることなく、呼吸に注意を向けることができる",
+ "周囲でいろいろなことが起きていても、身体感覚に気づくことができる",
+ "誰かと会話しているときに、自分の姿勢に注意を向けることができる",
+ "注意がそれても、自分の身体に注意を戻すことができる",
+ "考えている状態から再び身体の感覚に注意を集中させることができる",
+ "身体の一部に痛みや不快感があっても、身体全体への気づきを保つことができる",
+ "全身にしっかり意識を向けることができる",
+ "怒っているときに、身体がどのように変化するかに気づいている",
+ "生活の中で何か異変があったときに、それを身体で感じることができる",
+ "穏やかな体験の後、身体が違うように感じることに気づいている",
+ "心地よさを感じているときに、呼吸が自由で楽になっていることに気づいている",
+ "幸せ・喜びを感じているとき、身体がどのように変化しているかに気づいている",
+ "（精神的に）圧倒されているときに内面に落ち着きをみつけることができる",
+ "自分の身体に意識を向けたとき、落ち着いた感覚を感じる",
+ "緊張を和らげるために深呼吸を使うことができる",
+ "考えることにとらわれたとき、身体・呼吸に注意を集中させることによって心を落ち着かせることができる",
+ "自分の感情の状態を知るために自分の身体に耳を傾ける",
+ "気が動転したときに、時間をかけて身体がどのように感じているかを探る",
+ "自分が何をすべきかを知るために自分の身体に耳を傾ける",
+ "自分の身体の中に居心地の良さを感じられる",
+ "安心感を自分の身体で感じられる",
+ "自分の身体感覚を信じている"
+];
+
+// ---- 8下位尺度（1-indexed の項目番号 / r=逆転） ----
+const factors = [
+ {name:"1. 気づき", desc:"不快・快適・ニュートラルな身体感覚への気づき", items:[1,2,3,4]},
+ {name:"2. 気が散らない", desc:"痛みや不快な感覚を無視せず、注意を逸らさない傾向", items:[5,6,7], reverse:true},
+ {name:"3. 心配しない", desc:"不快な感覚に伴う精神的苦痛を心配しすぎない傾向", items:[8,9,10], reverseItems:[8,9]},
+ {name:"4. 注意制御", desc:"身体感覚への注意を保ち、コントロールする力", items:[11,12,13,14,15,16,17]},
+ {name:"5. 感情への気づき", desc:"身体感覚と感情状態とのつながりへの気づき", items:[18,19,20,21,22]},
+ {name:"6. 自己制御", desc:"身体に注意を向けることで苦痛を整える力", items:[23,24,25,26]},
+ {name:"7. 身体を聴く", desc:"自己洞察のために、身体へ積極的に耳を傾けること", items:[27,28,29]},
+ {name:"8. 信頼する", desc:"自分の身体は安全で信頼できる、という体験", items:[30,31,32]}
+];
+
+const reverseSet = new Set([5,6,7,8,9]); // 逆転項目
+
+const quiz = document.getElementById('quiz');
+items.forEach((text,i)=>{
+  const n=i+1;
+  const div=document.createElement('div');
+  div.className='q';div.id='q'+n;
+  let opts='';
+  for(let v=0;v<=5;v++){
+    opts+=`<div class="opt">
+      <input type="radio" name="q${n}" id="q${n}_${v}" value="${v}">
+      <label for="q${n}_${v}">${v}</label></div>`;
+  }
+  div.innerHTML=`
+    <div class="q-head">
+      <div class="q-num">${n}</div>
+      <div class="q-text">${text}</div>
+    </div>
+    <div class="opts">${opts}</div>
+    <div class="opt-ends"><span>全くない</span><span>いつもある</span></div>`;
+  quiz.appendChild(div);
+});
+
+const total=items.length;
+const progress=document.getElementById('progress');
+const note=document.getElementById('noteUnanswered');
+
+quiz.addEventListener('change',e=>{
+  const card=e.target.closest('.q');
+  if(card) card.classList.add('answered');
+  const done=document.querySelectorAll('.q.answered').length;
+  progress.style.width=(done/total*100)+'%';
+  note.textContent = done<total ? `あと ${total-done} 問` : 'すべて回答できました 🌱';
+});
+
+function getVal(n){
+  const el=document.querySelector(`input[name="q${n}"]:checked`);
+  return el?parseInt(el.value):null;
+}
+
+document.getElementById('calcBtn').addEventListener('click',()=>{
+  // 未回答チェック
+  let firstUn=null;
+  for(let n=1;n<=total;n++){if(getVal(n)===null){firstUn=n;break;}}
+  if(firstUn!==null){
+    note.textContent=`まだ回答していない問いがあります（問 ${firstUn}）`;
+    document.getElementById('q'+firstUn).scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  const list=document.getElementById('factorList');
+  list.innerHTML='';
+  factors.forEach(f=>{
+    let sum=0;
+    f.items.forEach(n=>{
+      let v=getVal(n);
+      if(reverseSet.has(n)) v=5-v; // 逆転
+      sum+=v;
+    });
+    const avg=sum/f.items.length;
+    const hasRev=f.items.some(n=>reverseSet.has(n));
+    const div=document.createElement('div');
+    div.className='factor';
+    div.innerHTML=`
+      <div class="factor-top">
+        <div class="factor-name">${f.name}${hasRev?'<span class="reverse-tag">逆転項目を含む</span>':''}</div>
+        <div class="factor-score">${avg.toFixed(2)}<span> / 5</span></div>
+      </div>
+      <div class="factor-desc">${f.desc}</div>
+      <div class="meter"><div class="meter-fill" data-w="${avg/5*100}"></div></div>`;
+    list.appendChild(div);
+  });
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('calcBtn').style.display='none';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>{document.querySelectorAll('.meter-fill').forEach(m=>m.style.width=m.dataset.w+'%');},100);
+});
+
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  quiz.reset();
+  document.querySelectorAll('.q').forEach(q=>q.classList.remove('answered'));
+  progress.style.width='0%';note.textContent='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('calcBtn').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+</body>
+</html>
