@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ここ晴れプロジェクト｜21日間の記録</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FDF9F0;       /* 温かい紙 */
+    --paper-2:#F7EDDC;     /* 少し沈んだ紙（ピーチ） */
+    --sky:#F8DDA2;         /* やわらかいゴールド（旧:空） */
+    --sky-deep:#E2A641;
+    --sprout:#ECA63C;      /* 陽だまりオレンジ（メイン） */
+    --sprout-deep:#D5872A;
+    --earth:#B08D63;       /* 土・かめ */
+    --coral:#E8694B;       /* アクセント（星の赤オレンジ） */
+    --ink:#5A4A39;         /* やわらかい墨（茶） */
+    --ink-soft:#9C8B73;
+    --line:#EEE0C8;
+    --shadow:0 10px 30px rgba(180,130,60,.12);
+    --radius:22px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Zen Kaku Gothic New','Zen Maru Gothic',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(248,221,162,.55), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(236,166,60,.16), transparent 55%),
+      var(--paper);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:26px 18px 80px}
+  h1,h2,h3{font-family:'Zen Maru Gothic',sans-serif;font-weight:700;margin:0}
+
+  /* ---------- ヘッダー ---------- */
+  .head{text-align:center;padding:14px 0 6px}
+  .eyebrow{font-family:'Zen Maru Gothic';font-size:13px;letter-spacing:.18em;color:var(--sprout-deep);font-weight:500}
+  .head h1{font-size:26px;margin-top:6px;letter-spacing:.02em}
+  .theme-chip{
+    display:inline-flex;align-items:center;gap:7px;margin-top:12px;
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:7px 16px;font-size:13.5px;font-weight:500;color:var(--ink);
+    box-shadow:var(--shadow);
+  }
+
+  /* ---------- カード共通 ---------- */
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:22px 20px;margin-top:18px;
+  }
+  .card-label{font-family:'Zen Maru Gothic';font-size:12.5px;letter-spacing:.14em;color:var(--ink-soft);font-weight:500}
+
+  /* ---------- オンボーディング ---------- */
+  #onboard .row{display:flex;gap:10px;margin-top:14px}
+  input[type=text],input[type=number]{
+    font-family:inherit;font-size:16px;color:var(--ink);
+    border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;width:100%;
+    background:var(--paper);outline:none;transition:border-color .18s,background .18s;
+  }
+  input:focus{border-color:var(--sprout);background:#fff}
+  textarea{
+    font-family:inherit;font-size:15px;color:var(--ink);width:100%;
+    border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;
+    background:var(--paper);outline:none;resize:vertical;min-height:64px;transition:border-color .18s,background .18s;
+  }
+  textarea:focus{border-color:var(--sprout);background:#fff}
+
+  .btn{
+    font-family:'Zen Maru Gothic';font-weight:700;font-size:15.5px;cursor:pointer;
+    border:none;border-radius:14px;padding:13px 22px;color:#fff;
+    background:linear-gradient(180deg,var(--sprout),var(--sprout-deep));
+    box-shadow:0 6px 16px rgba(213,135,42,.30);transition:transform .12s,box-shadow .12s,filter .12s;
+    white-space:nowrap;
+  }
+  .btn:hover{filter:brightness(1.03)}
+  .btn:active{transform:translateY(1px);box-shadow:0 3px 10px rgba(213,135,42,.30)}
+  .btn.ghost{background:#fff;color:var(--sprout-deep);border:1.5px solid var(--sprout);box-shadow:none}
+
+  /* ---------- 今日のカード ---------- */
+  .today-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .day-num{font-family:'Zen Maru Gothic';font-weight:700}
+  .day-num .big{font-size:30px;color:var(--sprout-deep)}
+  .day-num .small{font-size:15px;color:var(--ink-soft)}
+  .day-date{font-size:13.5px;color:var(--ink-soft);font-weight:500}
+
+  .field{margin-top:16px}
+  .field > label{display:block;font-size:14px;font-weight:500;margin-bottom:8px}
+  .field .unit{color:var(--ink-soft);font-size:13px;margin-left:4px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+  .chip{
+    font-family:inherit;font-size:13.5px;cursor:pointer;border:1.5px solid var(--line);
+    background:var(--paper);border-radius:999px;padding:7px 14px;color:var(--ink);transition:.15s;
+  }
+  .chip:hover{border-color:var(--sky-deep)}
+  .chip.on{background:var(--sky);border-color:var(--sky-deep);color:var(--ink);font-weight:500}
+
+  .save-row{display:flex;align-items:center;gap:12px;margin-top:20px}
+  .save-row .btn{flex:1}
+  .earned{font-size:13.5px;color:var(--sprout-deep);font-weight:500;min-height:20px}
+
+  /* ---------- 統計 ---------- */
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 14px;text-align:center;box-shadow:var(--shadow)}
+  .stat .v{font-family:'Zen Maru Gothic';font-weight:700;font-size:27px;line-height:1.1;color:var(--ink)}
+  .stat .v small{font-size:14px;color:var(--ink-soft);font-weight:500}
+  .stat .k{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+  .stat.accent .v{color:var(--coral)}
+  .stat.green .v{color:var(--sprout-deep)}
+
+  /* ---------- 成長の道（シグネチャー） ---------- */
+  .path-card{padding-bottom:26px}
+  .path-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .progress-line{height:8px;border-radius:999px;background:var(--paper-2);overflow:hidden;margin:14px 0 20px}
+  .progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--sprout),var(--sky-deep));width:0;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .stones{display:grid;grid-template-columns:repeat(7,1fr);gap:10px 6px}
+  .stone{
+    aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:17px;cursor:pointer;position:relative;
+    background:var(--paper-2);border:2px solid transparent;color:var(--ink-soft);
+    transition:transform .15s,background .25s,border-color .2s;
+  }
+  .stone .d{font-size:11px;font-family:'Zen Maru Gothic';font-weight:500}
+  .stone:hover{transform:translateY(-2px)}
+  .stone.done{background:linear-gradient(180deg,#FBE7C2,#F6D592);color:var(--sprout-deep)}
+  .stone.today{border-color:var(--coral);box-shadow:0 0 0 4px rgba(232,105,75,.18)}
+  .stone.future{opacity:.7}
+  .stone.bloom{animation:bloom .5s ease}
+  @keyframes bloom{0%{transform:scale(.7)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+  /* ---------- 振り返り ---------- */
+  details{margin-top:12px;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+  summary{list-style:none;cursor:pointer;padding:14px 16px;font-family:'Zen Maru Gothic';font-weight:500;font-size:14.5px;display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary .chev{color:var(--ink-soft);transition:transform .2s}
+  details[open] summary .chev{transform:rotate(180deg)}
+  details .body{padding:0 16px 16px}
+
+  /* ---------- トースト ---------- */
+  #toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;font-size:14px;font-weight:500;
+    padding:12px 20px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.2);
+    opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- お祝い ---------- */
+  #celebrate{
+    position:fixed;inset:0;background:rgba(253,249,240,.92);backdrop-filter:blur(4px);
+    display:none;align-items:center;justify-content:center;z-index:60;padding:24px;text-align:center;
+  }
+  #celebrate.show{display:flex}
+  #celebrate .inner{max-width:380px}
+  #celebrate h2{font-size:26px;margin-bottom:10px}
+  #celebrate p{font-size:15px;color:var(--ink-soft);margin:8px 0 22px}
+  .confetti{position:fixed;top:-10px;font-size:18px;animation:fall linear forwards;z-index:59;pointer-events:none}
+  @keyframes fall{to{transform:translateY(105vh) rotate(360deg);opacity:.9}}
+
+  .foot{text-align:center;color:var(--ink-soft);font-size:12px;margin-top:30px;line-height:1.9}
+  .hidden{display:none!important}
+
+  @media (max-width:380px){
+    .day-num .big{font-size:26px}
+    .stat .v{font-size:23px}
+    .stones{gap:8px 4px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="head">
+    <div class="eyebrow">KOKOHARE PROJECT</div>
+    <h1>21日間、育てる記録</h1>
+    <div class="theme-chip">🐢🌱 テーマ：セルフ・コンパッション</div>
+  </header>
+
+  <!-- はじめての人：なまえ -->
+  <section class="card" id="onboard">
+    <div class="card-label">はじめに</div>
+    <p style="margin:10px 0 0;font-size:14.5px">この21日間、あなたの記録を残していくよ。<br>呼び名（ニックネーム）を教えてね🌷</p>
+    <div class="row">
+      <input type="text" id="nick" placeholder="例）まき" maxlength="20" />
+      <button class="btn" id="startBtn">はじめる</button>
+    </div>
+  </section>
+
+  <!-- 今日の記録 -->
+  <main id="app" class="hidden">
+
+    <section class="card" id="todayCard">
+      <div class="today-top">
+        <div class="day-num"><span id="dLabel"></span></div>
+        <div class="day-date" id="dDate"></div>
+      </div>
+
+      <div class="field">
+        <label>勉強した時間<span class="unit">（分）</span></label>
+        <div class="chips" data-target="study"></div>
+        <input type="number" id="study" min="0" max="600" placeholder="0" inputmode="numeric" />
+      </div>
+
+      <div class="field">
+        <label>実践した時間<span class="unit">（分）</span></label>
+        <div class="chips" data-target="practice"></div>
+        <input type="number" id="practice" min="0" max="600" placeholder="0" inputmode="numeric" />
+      </div>
+
+      <div class="field">
+        <label>メモ<span class="unit">（何をした？どうだった？）</span></label>
+        <textarea id="memo" placeholder="今日のひとこと…"></textarea>
+      </div>
+
+      <div class="save-row">
+        <button class="btn" id="saveBtn">この日を記録する</button>
+      </div>
+      <div class="earned" id="earned"></div>
+    </section>
+
+    <!-- 統計 -->
+    <div class="stats">
+      <div class="stat green"><div class="v" id="sPoints">0</div><div class="k">合計ポイント</div></div>
+      <div class="stat accent"><div class="v" id="sStreak">0<small>日</small></div><div class="k">いまの連続記録</div></div>
+      <div class="stat"><div class="v" id="sBest">0<small>日</small></div><div class="k">最高連続記録</div></div>
+      <div class="stat"><div class="v" id="sDays">0<small>/21</small></div><div class="k">取り組んだ日</div></div>
+    </div>
+
+    <!-- 成長の道 -->
+    <section class="card path-card">
+      <div class="path-head">
+        <div class="card-label">21日間のあゆみ</div>
+        <div style="font-size:12.5px;color:var(--ink-soft)" id="pathPct">0%</div>
+      </div>
+      <div class="progress-line"><div class="progress-fill" id="pFill"></div></div>
+      <div class="stones" id="stones"></div>
+      <p style="font-size:12px;color:var(--ink-soft);margin:16px 0 0;text-align:center">まるをタップすると、その日の記録を見たり直したりできるよ</p>
+    </section>
+
+    <!-- 振り返り -->
+    <section style="margin-top:6px">
+      <div class="card-label" style="margin:18px 4px 2px">週ごとの振り返り</div>
+      <details><summary>1週目（Day 1–7）の振り返り<span class="chev">⌄</span></summary><div class="body"><textarea data-week="0" placeholder="この1週間、どんな気づきがあった？"></textarea></div></details>
+      <details><summary>2週目（Day 8–14）の振り返り<span class="chev">⌄</span></summary><div class="body"><textarea data-week="1" placeholder="続けてみて、変わったことは？"></textarea></div></details>
+      <details><summary>3週目（Day 15–21）の振り返り<span class="chev">⌄</span></summary><div class="body"><textarea data-week="2" placeholder="21日間を終えて、いまの自分へひとこと"></textarea></div></details>
+    </section>
+
+    <p class="foot">
+      記録はこの端末に保存されるよ 🐢<br>
+      <span id="who"></span>
+    </p>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<div id="celebrate">
+  <div class="inner">
+    <div style="font-size:48px">🎉🐢🌸</div>
+    <h2>21日間、よくやったね！</h2>
+    <p id="celebMsg"></p>
+    <button class="btn" onclick="document.getElementById('celebrate').classList.remove('show')">とじる</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ▼▼▼ ここだけ設定すればOK ▼▼▼
+   ------------------------------------------------------------
+   START_DATE : 21日間のスタート日（YYYY-MM-DD）
+   採点ルール  : とわちゃんのスプレッドシートに合わせてあるよ
+   CENTRAL_LOG: スプレッドシートにも記録を届けたいとき用
+              （Googleフォームを1個作って、下を埋めればON）
+   ============================================================ */
+  const CONFIG = {
+    START_DATE: "2026-06-22",   // ← 今回の開始日に合わせて変えてね
+    TOTAL_DAYS: 21,
+
+    // 採点ルール（シート準拠：勉強×1 ＋ 実践×2、1日の上限50）
+    STUDY_WEIGHT: 1,
+    PRACTICE_WEIGHT: 2,
+    DAILY_CAP: 50,
+    // 連続記録ボーナス：シート準拠（連続n日目に 5×(1+2+…+(n-1)) もらえる）
+    //   1日目→0 / 2日目→5 / 3日目→15 / 4日目→30 …とだんだん増える
+    //   ※増えすぎを抑えたいときは BONUS_CAP に上限を入れてね（null=上限なし）
+    streakBonus: function(streakLen){
+      var b = 5 * (streakLen - 1) * streakLen / 2;
+      var cap = CONFIG.BONUS_CAP;
+      return (cap != null && b > cap) ? cap : b;
+    },
+    BONUS_CAP: null,
+
+    // ▼ スプレッドシートに届けたいとき（任意）
+    CENTRAL_LOG: {
+      enabled: false,                       // ← true にするとON
+      formUrl: "",                          // 例）https://docs.google.com/forms/d/e/XXXX/formResponse
+      fields: {                             // Googleフォームの entry.数字 を入れる
+        nickname: "entry.0000000000",
+        day:      "entry.0000000000",
+        date:     "entry.0000000000",
+        study:    "entry.0000000000",
+        practice: "entry.0000000000",
+        points:   "entry.0000000000",
+        streak:   "entry.0000000000",
+        memo:     "entry.0000000000"
+      }
+    }
+  };
+/* ============================================================
+   ▲▲▲ 設定はここまで（この下は触らなくてOK） ▲▲▲
+   ============================================================ */
+
+  const LS_KEY = "cocohare_project_v1";
+  const $ = (id)=>document.getElementById(id);
+
+  let state = load();
+  function load(){
+    try{ return JSON.parse(localStorage.getItem(LS_KEY)) || blank(); }
+    catch(e){ return blank(); }
+  }
+  function blank(){ return { nickname:"", entries:{}, reflections:["","",""] }; }
+  function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+  /* ---- 日付まわり ---- */
+  function dayDateStr(dayNum){
+    const d = new Date(CONFIG.START_DATE+"T00:00:00");
+    d.setDate(d.getDate() + (dayNum-1));
+    const w = ["日","月","火","水","木","金","土"][d.getDay()];
+    return (d.getMonth()+1)+"/"+d.getDate()+"（"+w+"）";
+  }
+  function todayDayNum(){
+    const start = new Date(CONFIG.START_DATE+"T00:00:00");
+    const now = new Date(); now.setHours(0,0,0,0);
+    const diff = Math.floor((now - start)/86400000) + 1;
+    return Math.min(Math.max(diff,1), CONFIG.TOTAL_DAYS);
+  }
+
+  /* ---- 採点 ---- */
+  function dailyPoints(study, practice){
+    const raw = (study||0)*CONFIG.STUDY_WEIGHT + (practice||0)*CONFIG.PRACTICE_WEIGHT;
+    return Math.min(raw, CONFIG.DAILY_CAP);
+  }
+  function isActive(dayNum){
+    const e = state.entries[dayNum];
+    return e && ((e.study||0)+(e.practice||0) > 0);
+  }
+  // 各日の連続記録の長さ（その日まで連続して active が続いている数）
+  function streakLenAt(dayNum){
+    let len=0;
+    for(let d=dayNum; d>=1; d--){ if(isActive(d)) len++; else break; }
+    return isActive(dayNum) ? len : 0;
+  }
+  function computeTotals(){
+    let points=0, best=0, run=0, days=0;
+    for(let d=1; d<=CONFIG.TOTAL_DAYS; d++){
+      const e = state.entries[d];
+      if(e){ days++; points += dailyPoints(e.study,e.practice); }
+      if(isActive(d)){ run++; best=Math.max(best,run); points += CONFIG.streakBonus(run); }
+      else { run=0; }
+    }
+    // いまの連続（今日まで or 最後にactiveだった日からの連続を、末尾から数える）
+    let cur=0;
+    for(let d=todayDayNum(); d>=1; d--){ if(isActive(d)) cur++; else break; }
+    return { points, best, current:cur, days };
+  }
+
+  /* ---- 描画 ---- */
+  let selectedDay = todayDayNum();
+
+  function render(){
+    // オンボーディング
+    if(!state.nickname){
+      $("onboard").classList.remove("hidden");
+      $("app").classList.add("hidden");
+      return;
+    }
+    $("onboard").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    $("who").textContent = state.nickname + " さんの21日間";
+
+    // 今日カード
+    const t = todayDayNum();
+    let tag = '';
+    if(selectedDay < t)      tag = '　<span class="small" style="color:var(--ink-soft)">（ふりかえり）</span>';
+    else if(selectedDay > t) tag = '　<span class="small" style="color:var(--sky-deep)">（これからの日）</span>';
+    $("dLabel").innerHTML = '<span class="small">Day </span><span class="big">'+selectedDay+'</span><span class="small"> / 21</span>' + tag;
+    $("dDate").textContent = dayDateStr(selectedDay);
+    const e = state.entries[selectedDay] || {study:"",practice:"",memo:""};
+    $("study").value = e.study ?? "";
+    $("practice").value = e.practice ?? "";
+    $("memo").value = e.memo ?? "";
+    $("earned").textContent = "";
+    syncChips();
+
+    // 統計
+    const tot = computeTotals();
+    $("sPoints").textContent = tot.points;
+    $("sStreak").innerHTML = tot.current + '<small>日</small>';
+    $("sBest").innerHTML = tot.best + '<small>日</small>';
+    $("sDays").innerHTML = tot.days + '<small>/21</small>';
+
+    // 成長の道
+    const pct = Math.round(tot.days / CONFIG.TOTAL_DAYS * 100);
+    $("pFill").style.width = pct+"%";
+    $("pathPct").textContent = pct+"%";
+    drawStones(t);
+
+    // 振り返り
+    document.querySelectorAll('textarea[data-week]').forEach(ta=>{
+      ta.value = state.reflections[+ta.dataset.week] || "";
+    });
+  }
+
+  function drawStones(today){
+    const box = $("stones"); box.innerHTML="";
+    for(let d=1; d<=CONFIG.TOTAL_DAYS; d++){
+      const s = document.createElement("div");
+      s.className = "stone";
+      if(isActive(d)) s.classList.add("done");
+      else if(d>today) s.classList.add("future");
+      if(d===today) s.classList.add("today");
+      if(d===selectedDay) s.style.outline = "2px dashed var(--sky-deep)";
+      s.innerHTML = isActive(d) ? "🌱" : (d===today ? "🐢" : '<span class="d">'+d+'</span>');
+      s.title = "Day "+d+"・"+dayDateStr(d);
+      s.onclick = ()=>{ selectedDay = d; render(); $("todayCard").scrollIntoView({behavior:"smooth",block:"start"}); };
+      box.appendChild(s);
+    }
+  }
+
+  /* ---- クイック入力チップ ---- */
+  const QUICK = [5,10,15,30];
+  function buildChips(){
+    document.querySelectorAll('.chips').forEach(c=>{
+      const target = c.dataset.target;
+      QUICK.forEach(v=>{
+        const b=document.createElement("button");
+        b.className="chip"; b.textContent="+"+v;
+        b.onclick=()=>{ const inp=$(target); inp.value=(+inp.value||0)+v; syncChips(); };
+        c.appendChild(b);
+      });
+    });
+  }
+  function syncChips(){ /* チップは加算式なので状態表示は省略・将来用フック */ }
+
+  /* ---- 保存 ---- */
+  function doSave(){
+    const study = +$("study").value || 0;
+    const practice = +$("practice").value || 0;
+    const memo = $("memo").value.trim();
+    state.entries[selectedDay] = { study, practice, memo };
+    save();
+
+    const wasFirst = !document.querySelector('.stone.done');
+    const dp = dailyPoints(study, practice);
+    const sl = streakLenAt(selectedDay);
+    const bonus = isActive(selectedDay) ? CONFIG.streakBonus(sl) : 0;
+
+    render();
+    // ブルーム演出
+    const stones = document.querySelectorAll('.stone');
+    if(stones[selectedDay-1]){ stones[selectedDay-1].classList.add('bloom'); }
+
+    if(study+practice>0){
+      let msg = "+"+dp+"ポイント";
+      if(bonus>0) msg += "（連続"+sl+"日ボーナス +"+bonus+"）";
+      $("earned").textContent = msg + " 🌱";
+      toast("記録したよ。よくやったね🐢");
+    } else {
+      toast("記録したよ🌱");
+    }
+
+    centralLog(selectedDay, study, practice, dp + bonus, sl, memo);
+
+    // 完了チェック
+    const tot = computeTotals();
+    if(tot.days >= CONFIG.TOTAL_DAYS && !state._celebrated){
+      state._celebrated = true; save(); celebrate(tot);
+    }
+  }
+
+  /* ---- スプレッドシートへ送信（任意） ---- */
+  function centralLog(day, study, practice, points, streak, memo){
+    const c = CONFIG.CENTRAL_LOG;
+    if(!c.enabled || !c.formUrl) return;
+    const fd = new FormData();
+    fd.append(c.fields.nickname, state.nickname);
+    fd.append(c.fields.day, day);
+    fd.append(c.fields.date, dayDateStr(day));
+    fd.append(c.fields.study, study);
+    fd.append(c.fields.practice, practice);
+    fd.append(c.fields.points, points);
+    fd.append(c.fields.streak, streak);
+    fd.append(c.fields.memo, memo);
+    fetch(c.formUrl, {method:"POST", mode:"no-cors", body:fd}).catch(()=>{});
+  }
+
+  /* ---- お祝い ---- */
+  function celebrate(tot){
+    $("celebMsg").textContent =
+      "21日間ぜんぶ記録できたね。合計"+tot.points+"ポイント、最高連続"+tot.best+"日。"
+      + "ここまで続けられた自分を、まるごとねぎらってね🌷";
+    $("celebrate").classList.add("show");
+    const emojis=["🎉","🌸","🌱","🐢","✨","🍃"];
+    for(let i=0;i<40;i++){
+      const c=document.createElement("div"); c.className="confetti";
+      c.textContent=emojis[i%emojis.length];
+      c.style.left=Math.random()*100+"vw";
+      c.style.animationDuration=(2+Math.random()*2.5)+"s";
+      c.style.animationDelay=(Math.random()*0.6)+"s";
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),5000);
+    }
+  }
+
+  /* ---- トースト ---- */
+  let toastTimer;
+  function toast(msg){
+    const t=$("toast"); t.textContent=msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
+  }
+
+  /* ---- イベント ---- */
+  $("startBtn").onclick=()=>{
+    const n=$("nick").value.trim();
+    if(!n){ $("nick").focus(); return; }
+    state.nickname=n; save(); render();
+    toast("ようこそ、"+n+"さん🌱");
+  };
+  $("nick").addEventListener("keydown",e=>{ if(e.key==="Enter") $("startBtn").click(); });
+  $("saveBtn").onclick=doSave;
+  document.querySelectorAll('textarea[data-week]').forEach(ta=>{
+    ta.addEventListener("input",()=>{ state.reflections[+ta.dataset.week]=ta.value; save(); });
+  });
+
+  /* ---- 初期化 ---- */
+  buildChips();
+  render();
+</script>
+</body>
+</html>
