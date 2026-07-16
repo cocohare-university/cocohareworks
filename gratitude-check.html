@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ここ晴れ｜感謝のセルフチェック</title>
+<style>
+  :root{
+    --bg:#f7f4ef;
+    --card:#fffdfa;
+    --ink:#5a5249;
+    --ink-soft:#8a8073;
+    --line:#e7e0d4;
+    --accent:#c9a86a;      /* やわらかいはちみつ色 */
+    --accent-deep:#ac8d53;
+    --accent-bg:#faf4e8;
+    --leaf:#9bb08a;         /* やわらかいグリーン */
+    --rose:#c9a5a0;         /* やわらかいローズ */
+    --gold:#cdb27e;
+    --shadow:0 10px 40px rgba(140,120,100,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg)}
+  body{
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    color:var(--ink);
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+    padding:32px 18px 80px;
+    display:flex;justify-content:center;
+  }
+  .wrap{width:100%;max-width:560px}
+
+  /* ---- 背景の淡い装飾 ---- */
+  .wrap::before{
+    content:"";position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(circle at 78% 8%, rgba(201,168,106,.10), transparent 42%),
+      radial-gradient(circle at 12% 88%, rgba(155,176,138,.10), transparent 45%);
+    pointer-events:none;
+  }
+
+  /* ---- ヘッダー ---- */
+  header{text-align:center;margin-bottom:30px}
+  .turtle{font-size:30px;display:block;margin-bottom:6px;opacity:.9}
+  h1{
+    font-size:25px;font-weight:600;letter-spacing:.06em;
+    color:var(--ink);margin-bottom:10px;
+  }
+  .sub{font-size:13.5px;color:var(--ink-soft);letter-spacing:.04em}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:20px;padding:30px 26px;box-shadow:var(--shadow);
+    margin-bottom:18px;
+  }
+
+  /* ---- イントロ ---- */
+  .lead{font-size:14.5px;color:var(--ink);margin-bottom:16px}
+  .lead.soft{color:var(--ink-soft);font-size:13.5px;margin-bottom:0}
+  .phase-pick{display:flex;gap:10px;margin-top:22px}
+  .phase-btn{
+    flex:1;border:1px solid var(--line);background:#fff;
+    border-radius:14px;padding:16px 10px;cursor:pointer;
+    font-family:inherit;color:var(--ink);font-size:14px;
+    transition:.25s;text-align:center;
+  }
+  .phase-btn span{display:block;font-size:21px;margin-bottom:5px}
+  .phase-btn small{display:block;font-size:11px;color:var(--ink-soft);margin-top:4px;letter-spacing:.02em}
+  .phase-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .phase-btn.active{
+    border-color:var(--accent);background:var(--accent-bg);
+    box-shadow:0 4px 16px rgba(201,168,106,.18);
+  }
+
+  .start-btn,.result-btn{
+    display:block;width:100%;margin-top:24px;
+    border:none;border-radius:14px;padding:16px;
+    background:var(--accent);color:#fff;font-family:inherit;
+    font-size:15px;letter-spacing:.08em;cursor:pointer;transition:.25s;
+  }
+  .start-btn:hover,.result-btn:hover{background:var(--accent-deep)}
+  .start-btn:disabled{background:#dcd3c8;cursor:not-allowed}
+
+  /* ---- 質問 ---- */
+  .progress{
+    font-size:12px;color:var(--ink-soft);letter-spacing:.1em;
+    text-align:center;margin-bottom:8px;
+  }
+  .progress-bar{
+    height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:26px;
+  }
+  .progress-fill{
+    height:100%;background:var(--accent);width:0;transition:width .4s ease;
+  }
+  .q-text{
+    font-size:16.5px;line-height:1.95;color:var(--ink);
+    margin-bottom:22px;min-height:96px;
+  }
+  .q-tag{
+    display:inline-block;font-size:11px;color:var(--accent-deep);
+    background:var(--accent-bg);border-radius:20px;padding:3px 12px;
+    margin-bottom:16px;letter-spacing:.08em;
+  }
+  .scale{display:flex;flex-direction:column;gap:7px}
+  .opt{
+    border:1px solid var(--line);background:#fff;border-radius:12px;
+    padding:11px 18px;cursor:pointer;font-family:inherit;
+    font-size:13.5px;color:var(--ink);text-align:left;transition:.2s;
+  }
+  .opt:hover{border-color:var(--accent);background:#fdfaf3}
+  .opt.sel{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-deep)}
+
+  .nav{display:flex;justify-content:space-between;margin-top:22px}
+  .back{
+    background:none;border:none;color:var(--ink-soft);
+    font-family:inherit;font-size:13px;cursor:pointer;letter-spacing:.04em;
+  }
+  .back:hover{color:var(--ink)}
+  .back[disabled]{opacity:0;pointer-events:none}
+
+  /* ---- 結果 ---- */
+  .bloom{text-align:center;padding:8px 0 4px}
+  .bloom-icon{font-size:48px;display:block;margin-bottom:10px}
+  .score-big{
+    font-size:46px;font-weight:600;color:var(--accent-deep);
+    letter-spacing:.02em;line-height:1.1;margin-bottom:2px;
+  }
+  .score-big .score-max{font-size:20px;color:var(--ink-soft);font-weight:400}
+  .score-cap{
+    font-size:11.5px;color:var(--ink-soft);letter-spacing:.14em;
+    margin-bottom:18px;
+  }
+  .bloom-title{font-size:20px;font-weight:600;margin-bottom:14px;color:var(--ink)}
+  .bloom-msg{font-size:14.5px;color:var(--ink);margin-bottom:6px}
+
+  .divider{height:1px;background:var(--line);margin:26px 0}
+
+  .balance-h{font-size:14px;color:var(--ink-soft);letter-spacing:.08em;margin-bottom:18px;text-align:center}
+  .gauge{margin-bottom:20px}
+  .gauge-top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:7px}
+  .gauge-name{color:var(--ink)}
+  .gauge-val{color:var(--ink-soft);font-size:12px}
+  .gauge-track{height:9px;background:var(--line);border-radius:9px;overflow:hidden}
+  .gauge-fill{height:100%;border-radius:9px;width:0;transition:width 1s ease}
+  .g-leaf .gauge-fill{background:var(--leaf)}
+  .g-gold .gauge-fill{background:var(--gold)}
+  .g-rose .gauge-fill{background:var(--rose)}
+
+  .hint{
+    background:#f6f3ec;border-radius:14px;padding:18px 20px;
+    font-size:13.5px;color:var(--ink);margin-top:22px;line-height:1.85;
+  }
+  .hint b{color:var(--accent-deep);font-weight:600}
+
+  /* ---- 前後比較 ---- */
+  .compare{
+    margin-top:18px;border:1px dashed var(--line);border-radius:14px;
+    padding:18px 20px;font-size:13px;color:var(--ink-soft);line-height:1.8;
+  }
+  .compare .save{
+    display:inline-block;margin-top:12px;border:1px solid var(--accent);
+    color:var(--accent-deep);background:#fff;border-radius:10px;
+    padding:9px 18px;font-family:inherit;font-size:13px;cursor:pointer;transition:.2s;
+  }
+  .compare .save:hover{background:var(--accent-bg)}
+  .prev-box{
+    margin-top:14px;background:#fbf8f3;border-radius:12px;padding:14px 16px;
+    font-size:13px;color:var(--ink);
+  }
+  .prev-box .row{display:flex;justify-content:space-between;margin:3px 0}
+  .delta-up{color:var(--leaf)}
+  .delta-flat{color:var(--ink-soft)}
+
+  footer{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:30px;line-height:1.9}
+  .hidden{display:none}
+  .fade{animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="turtle">🐢</span>
+    <h1>感謝のセルフチェック</h1>
+    <p class="sub">いまの感謝の「現在地」を知る、9つの問い</p>
+  </header>
+
+  <!-- ===== STEP 0: イントロ ===== -->
+  <section id="intro" class="card fade">
+    <p class="lead">これは、点数で自分を「ジャッジする」ものではありません。<br>
+    今の自分の、<b>感謝（グラティチュード）</b>の「現在地」を知るためのチェックです。講座の前と後で見くらべると、自分の変化が見えてきます🌱</p>
+    <p class="lead soft">この数週間の自分を、ふんわり思い浮かべながら答えてみてください。正解はありません。ぱっと感じた方で大丈夫です🌷</p>
+
+    <p class="lead" style="margin-top:24px;margin-bottom:0;font-size:13.5px;color:var(--ink-soft)">今は、どのタイミングですか?</p>
+    <div class="phase-pick">
+      <button class="phase-btn" data-phase="before">
+        <span>🌱</span>講座を見る前
+        <small>これから学ぶ</small>
+      </button>
+      <button class="phase-btn" data-phase="after">
+        <span>🌼</span>講座を見た後
+        <small>学んで、しばらく経った</small>
+      </button>
+    </div>
+
+    <button class="start-btn" id="startBtn" disabled>はじめる</button>
+  </section>
+
+  <!-- ===== STEP 1: 質問 ===== -->
+  <section id="quiz" class="card hidden">
+    <p class="progress" id="progressText">1 / 9</p>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="q-tag" id="qTag"></span>
+    <p class="q-text" id="qText"></p>
+    <div class="scale" id="scale"></div>
+    <div class="nav">
+      <button class="back" id="backBtn" disabled>← もどる</button>
+      <span style="font-size:12px;color:var(--ink-soft)" id="navHint">選ぶと、次へ進みます</span>
+    </div>
+  </section>
+
+  <!-- ===== STEP 2: 結果 ===== -->
+  <section id="result" class="card hidden">
+    <div class="bloom">
+      <span class="bloom-icon" id="bIcon">🌷</span>
+      <div class="score-big"><span id="scoreNum">0</span><span class="score-max"> / 63</span></div>
+      <p class="score-cap">感謝スコア</p>
+      <p class="bloom-title" id="bTitle"></p>
+      <p class="bloom-msg" id="bMsg"></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="balance-h">いまの、3つの感謝のかたち</p>
+
+    <div class="gauge g-leaf">
+      <div class="gauge-top"><span class="gauge-name">🌱 気づく感謝</span><span class="gauge-val" id="v1"></span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="g1"></div></div>
+    </div>
+    <div class="gauge g-gold">
+      <div class="gauge-top"><span class="gauge-name">💛 感じる感謝</span><span class="gauge-val" id="v2"></span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="g2"></div></div>
+    </div>
+    <div class="gauge g-rose">
+      <div class="gauge-top"><span class="gauge-name">🌷 伝える感謝</span><span class="gauge-val" id="v3"></span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="g3"></div></div>
+    </div>
+
+    <div class="hint" id="hintBox"></div>
+
+    <div class="compare" id="compareBox">
+      <span id="compareText"></span>
+    </div>
+
+    <button class="result-btn" id="againBtn">もう一度、はじめから</button>
+  </section>
+
+  <footer>
+    🐢 ここ晴れ大学｜感謝のセルフチェック<br>
+    このチェックは、ポジティブ心理学の感謝研究（McCullough・Emmons・Tsang らの Gratitude Questionnaire など）で用いられている質問をもとに、ここ晴れが日本語に翻訳・編集したものです。「3つの感謝のかたち」はここ晴れによる整理です。正式な心理尺度・診断・医療を目的としたものではありません。
+  </footer>
+
+</div>
+
+<script>
+/* ---------------- データ ---------------- */
+// pole: + はそのまま採点 / - は逆転（あてはまらないほど高得点）
+// elem: 1=気づく感謝 2=感じる感謝 3=伝える感謝
+const QUESTIONS = [
+  { tag:"伝える感謝", elem:3, pole:"+",
+    text:"助けてくれた人に「ありがとう」を伝えるのは、わたしにはとても簡単なことだ。" },
+  { tag:"感じる感謝", elem:2, pole:"+",
+    text:"わたしにとって人生は、「重荷」というより、ずっと「贈りもの」だ。" },
+  { tag:"気づく感謝", elem:1, pole:"-",
+    text:"人生のいろいろなことを、つい「あたりまえ」と思ってしまうところがある。" },
+  { tag:"感じる感謝", elem:2, pole:"+",
+    text:"感謝していることをぜんぶ書き出すとしたら、とても長いリストになると思う。" },
+  { tag:"気づく感謝", elem:1, pole:"+",
+    text:"美しいものや、心をゆさぶるものに出会うと、ほとんどいつも、深い感謝の気持ちがわいてくる。" },
+  { tag:"気づく感謝", elem:1, pole:"+",
+    text:"たくさんの人の助けがなければ、ここまで来ることはできなかったと思う。" },
+  { tag:"感じる感謝", elem:2, pole:"+",
+    text:"わたしの人生には、感謝できることがたくさんある。" },
+  { tag:"伝える感謝", elem:3, pole:"-",
+    text:"人に感謝の気持ちを伝えるのは、どちらかというと苦手だ。" },
+  { tag:"感じる感謝", elem:2, pole:"+",
+    text:"人生で受けとってきた多くの贈りものに、深い感謝を感じている。" },
+];
+
+const OPTIONS = [
+  { label:"まったくそう思わない", v:1 },
+  { label:"そう思わない",         v:2 },
+  { label:"あまりそう思わない",   v:3 },
+  { label:"どちらとも言えない",   v:4 },
+  { label:"少しそう思う",         v:5 },
+  { label:"そう思う",             v:6 },
+  { label:"とてもそう思う",       v:7 },
+];
+
+// 各要素の問数（min = 問数×1, max = 問数×7）
+const ELEMS = {
+  1:{ name:"気づく感謝", n:3 },
+  2:{ name:"感じる感謝", n:4 },
+  3:{ name:"伝える感謝", n:2 },
+};
+
+/* ---------------- 状態 ---------------- */
+let phase = null;          // "before" / "after"
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+const $ = id => document.getElementById(id);
+
+/* ---------------- イントロ ---------------- */
+document.querySelectorAll(".phase-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".phase-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    phase = btn.dataset.phase;
+    $("startBtn").disabled = false;
+  });
+});
+
+$("startBtn").addEventListener("click",()=>{
+  $("intro").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("quiz").classList.add("fade");
+  render();
+});
+
+/* ---------------- 質問描画 ---------------- */
+function render(){
+  const q = QUESTIONS[idx];
+  $("progressText").textContent = (idx+1)+" / "+QUESTIONS.length;
+  $("progressFill").style.width = ((idx)/QUESTIONS.length*100)+"%";
+  $("qTag").textContent = q.tag;
+  $("qText").textContent = q.text;
+
+  const scale = $("scale");
+  scale.innerHTML = "";
+  OPTIONS.forEach(o=>{
+    const b = document.createElement("button");
+    b.className = "opt" + (answers[idx]===o.v ? " sel":"");
+    b.textContent = o.label;
+    b.addEventListener("click",()=>{
+      answers[idx] = o.v;
+      setTimeout(next,180);
+    });
+    scale.appendChild(b);
+  });
+
+  $("backBtn").disabled = idx===0;
+  $("quiz").classList.remove("fade"); void $("quiz").offsetWidth; $("quiz").classList.add("fade");
+}
+
+function next(){
+  if(idx < QUESTIONS.length-1){ idx++; render(); }
+  else finish();
+}
+$("backBtn").addEventListener("click",()=>{ if(idx>0){ idx--; render(); }});
+
+/* ---------------- 採点 ---------------- */
+function scoreElement(elem){
+  // pole + はそのまま、- は (8 - v) で逆転。各問1-7
+  let s = 0;
+  QUESTIONS.forEach((q,i)=>{
+    if(q.elem===elem){
+      s += (q.pole==="+") ? answers[i] : (8 - answers[i]);
+    }
+  });
+  return s;
+}
+
+function finish(){
+  const e1 = scoreElement(1), e2 = scoreElement(2), e3 = scoreElement(3);
+  const total = e1 + e2 + e3;          // 9〜63
+  const pct = (v,n) => Math.round((v - n) / (n*6) * 100); // n問: min n, max 7n → 0-100%
+
+  // ---- 花のようす（目安） ----
+  let icon,title,msg;
+  if(total >= 50){
+    icon="🌼"; title="感謝の花が、咲いています";
+    msg="今、「ありがとう」があなたの毎日に、たっぷり流れているみたい。<br>その花を「咲かせ続けなきゃ」とがんばらなくて大丈夫。そのまま、味わってあげてください。";
+  } else if(total >= 34){
+    icon="🌷"; title="つぼみが、ふくらんでいます";
+    msg="感謝の気持ちは、もうちゃんとあなたの中にあります。<br>あとは、気づいて、言葉にする回数がすこし増えるだけで、ふわっとひらいていきます。";
+  } else {
+    icon="🌱"; title="今は、芽ばえのとき";
+    msg="今は、感謝を感じにくい時期なのかもしれません。<br>それはあなたが冷たいからではなく、心に余裕がないだけのことも多いんです。<br>ここから育てていける——それを知るために、このチェックがあります🌷";
+  }
+  $("bIcon").textContent = icon;
+  $("bTitle").textContent = title;
+  $("bMsg").innerHTML = msg;
+
+  // ---- 合計スコアをカウントアップ表示 ----
+  const scoreEl = $("scoreNum");
+  let shown = 0;
+  const step = Math.max(1, Math.round(total/24));
+  const tick = setInterval(()=>{
+    shown += step;
+    if(shown >= total){ shown = total; clearInterval(tick); }
+    scoreEl.textContent = shown;
+  }, 28);
+
+  // ---- 3要素ゲージ ----
+  $("v1").textContent = e1+" / "+(ELEMS[1].n*7);
+  $("v2").textContent = e2+" / "+(ELEMS[2].n*7);
+  $("v3").textContent = e3+" / "+(ELEMS[3].n*7);
+  setTimeout(()=>{
+    $("g1").style.width = pct(e1,ELEMS[1].n)+"%";
+    $("g2").style.width = pct(e2,ELEMS[2].n)+"%";
+    $("g3").style.width = pct(e3,ELEMS[3].n)+"%";
+  },120);
+
+  // ---- 一番育てがいのある要素へのヒント（%で比較） ----
+  const els = [
+    {n:1,v:pct(e1,ELEMS[1].n),name:"気づく感謝",
+     work:"「あたりまえ」の中にかくれている贈りものに気づく練習が、講座に出てきます。ここがいちばん、育てがいのあるところかもしれません。"},
+    {n:2,v:pct(e2,ELEMS[2].n),name:"感じる感謝",
+     work:"感謝を頭で「わかる」から、心で「じんわり感じる」へ。講座の味わうワークが、ここにそっと効いてくるかもしれません。"},
+    {n:3,v:pct(e3,ELEMS[3].n),name:"伝える感謝",
+     work:"感じた「ありがとう」を、言葉にして届ける練習が、講座に出てきます。伝えると、感謝は自分にも相手にも、二度咲きします。"},
+  ];
+  const low = els.reduce((a,b)=> b.v < a.v ? b : a);
+  const high = els.reduce((a,b)=> b.v > a.v ? b : a);
+
+  if(low.v >= 75){
+    $("hintBox").innerHTML =
+      "今は、3つの感謝が、どれもやわらかく満ちているみたいです🌷<br><br>"+
+      "研究では、感謝は「気質」であると同時に、筋肉のように育てられる「習慣」でもあるとされています。"+
+      "講座では、この満ちた状態をもっと深く味わうヒントに出会えます🐢";
+  } else if(high.v - low.v <= 10){
+    $("hintBox").innerHTML =
+      "3つの感謝は、今、わりとそろって同じくらいのようです。<br><br>"+
+      "まずは講座を、はじめから順番にのぞいてみてください。"+
+      "学んでみると、「あ、これか」と腑に落ちる瞬間が、きっとあります🌱";
+  } else {
+    $("hintBox").innerHTML =
+      "今は <b>"+low.name+"</b> が、少し眠っているのかもしれません。<br>"+
+      low.work+"<br><br>まずは、講座を見てみましょう🐢<br>"+
+      "どれが低くても、大丈夫。それは「あなたが足りない」のではなく、「ここから育てていける」というサインです🌷";
+  }
+
+  // ---- 前後比較 ----
+  handleCompare(total,e1,e2,e3);
+
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  $("result").classList.add("fade");
+  $("progressFill").style.width = "100%";
+}
+
+/* ---------------- 前後比較（メモリ内のみ・任意保存ボタン） ---------------- */
+let savedSnapshot = null; // セッション内メモリのみ（ブラウザ保存はしない）
+
+function handleCompare(total,e1,e2,e3){
+  const box = $("compareBox");
+  const cur = {phase,total,e1,e2,e3};
+
+  if(phase==="before"){
+    box.innerHTML =
+      '<span>このあと講座を見て、しばらくしたら、もう一度ここに戻ってきてください。'+
+      '「講座を見た後」で測ると、感謝の「現在地」がどう動いたかが見えてきます🌱<br><br>'+
+      '今の結果を覚えておきたい方は、下のボタンを押すと、この画面を開いている間だけ記録しておけます。</span>'+
+      '<br><button class="save" id="saveBtn">この結果を覚えておく</button>'+
+      '<div id="savedNote" class="prev-box hidden"></div>';
+    setTimeout(()=>{
+      $("saveBtn").addEventListener("click",()=>{
+        savedSnapshot = cur;
+        const n = $("savedNote");
+        n.classList.remove("hidden");
+        n.innerHTML = "🌱 「講座を見る前」の感謝のようすを、覚えました。<br>"+
+          "合計 "+total+" / 63（気づく "+e1+"・感じる "+e2+"・伝える "+e3+"）<br>"+
+          "<span style='color:var(--ink-soft);font-size:12px'>※この画面を閉じると消えます。スクリーンショットで残しておくのもおすすめです📸</span>";
+        $("saveBtn").textContent = "覚えました 🌷";
+        $("saveBtn").disabled = true;
+        $("saveBtn").style.opacity = .6;
+      });
+    },50);
+
+  } else { // after
+    if(savedSnapshot && savedSnapshot.phase==="before"){
+      const p = savedSnapshot;
+      const d = (now,bef)=>{
+        const diff = now-bef;
+        if(diff>0)  return '<span class="delta-up">+'+diff+'</span>';
+        if(diff<0)  return '<span class="delta-flat">'+diff+'</span>';
+        return '<span class="delta-flat">±0</span>';
+      };
+      box.innerHTML =
+        '<span>🌼 「講座を見る前」とくらべてみました。</span>'+
+        '<div class="prev-box">'+
+          '<div class="row"><span>感謝スコア（合計）</span><span>'+p.total+' → '+total+'　'+d(total,p.total)+'</span></div>'+
+          '<div class="row"><span>🌱 気づく感謝</span><span>'+p.e1+' → '+e1+'　'+d(e1,p.e1)+'</span></div>'+
+          '<div class="row"><span>💛 感じる感謝</span><span>'+p.e2+' → '+e2+'　'+d(e2,p.e2)+'</span></div>'+
+          '<div class="row"><span>🌷 伝える感謝</span><span>'+p.e3+' → '+e3+'　'+d(e3,p.e3)+'</span></div>'+
+        '</div>'+
+        '<span style="display:block;margin-top:12px">数字が増えていても、減っていても、変わらなくても——どれも、責めなくていい変化です。'+
+        '大事なのは「自分の心の動きに、気づけた」こと。その気づき自体が、感謝の練習の入口です🐢</span>';
+    } else {
+      box.innerHTML =
+        '<span>🌼 「講座を見た後」として測りました。<br>'+
+        '「講座を見る前」の結果がこの画面に残っていないので、今回は今のようすだけをお届けします。<br><br>'+
+        '次にやるときは、まず「講座を見る前」で測って結果を覚えておくと、変化が見えてきます🌱<br>'+
+        '<span style="color:var(--ink-soft);font-size:12px">※前回スクリーンショットを撮っていれば、それと見くらべてみてください📸</span></span>';
+    }
+  }
+}
+
+/* ---------------- やり直し ---------------- */
+$("againBtn").addEventListener("click",()=>{
+  idx=0; answers=new Array(QUESTIONS.length).fill(null);
+  $("result").classList.add("hidden");
+  $("intro").classList.remove("hidden");
+  $("intro").classList.add("fade");
+  $("startBtn").disabled = true;
+  document.querySelectorAll(".phase-btn").forEach(b=>b.classList.remove("active"));
+  phase=null;
+});
+</script>
+</body>
+</html>
