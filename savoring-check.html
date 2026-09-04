@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ここ晴れ｜味わう力 セルフチェック</title>
+<style>
+  :root{
+    --bg:#f7f4ef;
+    --card:#fffdfa;
+    --ink:#5a5249;
+    --ink-soft:#8a8073;
+    --line:#e7e0d4;
+    --accent:#83B9B5;      /* やわらかいミント */
+    --accent-deep:#549691;
+    --leaf:#9bb08a;         /* やわらかいグリーン */
+    --sky:#a9bcc9;          /* やわらかいブルー */
+    --rain:#9aa6b4;
+    --gold:#cdb27e;
+    --shadow:0 10px 40px rgba(140,120,100,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg)}
+  body{
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    color:var(--ink);
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+    padding:32px 18px 80px;
+    display:flex;justify-content:center;
+  }
+  .wrap{width:100%;max-width:560px}
+
+  /* ---- 背景の淡い装飾 ---- */
+  .wrap::before{
+    content:"";position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(circle at 78% 8%, rgba(131,185,181,.12), transparent 42%),
+      radial-gradient(circle at 12% 88%, rgba(155,176,138,.10), transparent 45%);
+    pointer-events:none;
+  }
+
+  /* ---- ヘッダー ---- */
+  header{text-align:center;margin-bottom:30px}
+  .turtle{font-size:30px;display:block;margin-bottom:6px;opacity:.9}
+  h1{
+    font-size:25px;font-weight:600;letter-spacing:.06em;
+    color:var(--ink);margin-bottom:10px;
+  }
+  .sub{font-size:13.5px;color:var(--ink-soft);letter-spacing:.04em}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:20px;padding:30px 26px;box-shadow:var(--shadow);
+    margin-bottom:18px;
+  }
+
+  /* ---- イントロ ---- */
+  .lead{font-size:14.5px;color:var(--ink);margin-bottom:16px}
+  .lead.soft{color:var(--ink-soft);font-size:13.5px;margin-bottom:0}
+  .phase-pick{display:flex;gap:10px;margin-top:22px}
+  .phase-btn{
+    flex:1;border:1px solid var(--line);background:#fff;
+    border-radius:14px;padding:16px 10px;cursor:pointer;
+    font-family:inherit;color:var(--ink);font-size:14px;
+    transition:.25s;text-align:center;
+  }
+  .phase-btn span{display:block;font-size:21px;margin-bottom:5px}
+  .phase-btn small{display:block;font-size:11px;color:var(--ink-soft);margin-top:4px;letter-spacing:.02em}
+  .phase-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .phase-btn.active{
+    border-color:var(--accent);background:#eff7f6;
+    box-shadow:0 4px 16px rgba(131,185,181,.20);
+  }
+
+  .start-btn,.result-btn{
+    display:block;width:100%;margin-top:24px;
+    border:none;border-radius:14px;padding:16px;
+    background:var(--accent);color:#fff;font-family:inherit;
+    font-size:15px;letter-spacing:.08em;cursor:pointer;transition:.25s;
+  }
+  .start-btn:hover,.result-btn:hover{background:var(--accent-deep)}
+  .start-btn:disabled{background:#dcd3c8;cursor:not-allowed}
+
+  /* ---- 質問 ---- */
+  .progress{
+    font-size:12px;color:var(--ink-soft);letter-spacing:.1em;
+    text-align:center;margin-bottom:8px;
+  }
+  .progress-bar{
+    height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:26px;
+  }
+  .progress-fill{
+    height:100%;background:var(--accent);width:0;transition:width .4s ease;
+  }
+  .q-text{
+    font-size:17px;line-height:1.95;color:var(--ink);
+    margin-bottom:26px;min-height:104px;
+  }
+  .q-tag{
+    display:inline-block;font-size:11px;color:var(--accent-deep);
+    background:#eef6f5;border-radius:20px;padding:3px 12px;
+    margin-bottom:16px;letter-spacing:.08em;
+  }
+  .scale{display:flex;flex-direction:column;gap:9px}
+  .opt{
+    border:1px solid var(--line);background:#fff;border-radius:13px;
+    padding:13px 18px;cursor:pointer;font-family:inherit;
+    font-size:14px;color:var(--ink);text-align:left;transition:.2s;
+  }
+  .opt:hover{border-color:var(--accent);background:#f6faf9}
+  .opt.sel{border-color:var(--accent);background:#eef6f5;color:var(--accent-deep)}
+
+  .nav{display:flex;justify-content:space-between;margin-top:22px}
+  .back{
+    background:none;border:none;color:var(--ink-soft);
+    font-family:inherit;font-size:13px;cursor:pointer;letter-spacing:.04em;
+  }
+  .back:hover{color:var(--ink)}
+  .back[disabled]{opacity:0;pointer-events:none}
+
+  /* ---- 結果 ---- */
+  .weather{text-align:center;padding:8px 0 4px}
+  .weather-icon{font-size:48px;display:block;margin-bottom:10px}
+  .score-big{
+    font-size:46px;font-weight:600;color:var(--accent-deep);
+    letter-spacing:.02em;line-height:1.1;margin-bottom:2px;
+  }
+  .score-big .score-max{font-size:20px;color:var(--ink-soft);font-weight:400}
+  .score-cap{
+    font-size:11.5px;color:var(--ink-soft);letter-spacing:.14em;
+    margin-bottom:18px;
+  }
+  .weather-title{font-size:20px;font-weight:600;margin-bottom:14px;color:var(--ink)}
+  .weather-msg{font-size:14.5px;color:var(--ink);margin-bottom:6px}
+
+  .divider{height:1px;background:var(--line);margin:26px 0}
+
+  .balance-h{font-size:14px;color:var(--ink-soft);letter-spacing:.08em;margin-bottom:18px;text-align:center}
+  .gauge{margin-bottom:20px}
+  .gauge-top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:7px}
+  .gauge-name{color:var(--ink)}
+  .gauge-val{color:var(--ink-soft);font-size:12px}
+  .gauge-track{height:9px;background:var(--line);border-radius:9px;overflow:hidden}
+  .gauge-fill{height:100%;border-radius:9px;width:0;transition:width 1s ease}
+  .g-leaf .gauge-fill{background:var(--leaf)}
+  .g-sky .gauge-fill{background:var(--sky)}
+  .g-gold .gauge-fill{background:var(--gold)}
+
+  .hint{
+    background:#f6f3ec;border-radius:14px;padding:18px 20px;
+    font-size:13.5px;color:var(--ink);margin-top:22px;line-height:1.85;
+  }
+  .hint b{color:var(--accent-deep);font-weight:600}
+
+  /* ---- 前後比較 ---- */
+  .compare{
+    margin-top:18px;border:1px dashed var(--line);border-radius:14px;
+    padding:18px 20px;font-size:13px;color:var(--ink-soft);line-height:1.8;
+  }
+  .compare .save{
+    display:inline-block;margin-top:12px;border:1px solid var(--accent);
+    color:var(--accent-deep);background:#fff;border-radius:10px;
+    padding:9px 18px;font-family:inherit;font-size:13px;cursor:pointer;transition:.2s;
+  }
+  .compare .save:hover{background:#eef6f5}
+  .prev-box{
+    margin-top:14px;background:#f4f9f8;border-radius:12px;padding:14px 16px;
+    font-size:13px;color:var(--ink);
+  }
+  .prev-box .row{display:flex;justify-content:space-between;margin:3px 0}
+  .delta-up{color:var(--leaf)}
+  .delta-flat{color:var(--ink-soft)}
+
+  footer{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:30px;line-height:1.9}
+  .hidden{display:none}
+  .fade{animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="turtle">🫧</span>
+    <h1>味わう力 セルフチェック</h1>
+    <p class="sub">いまの「味わう力」を、そっと知る10の問い</p>
+  </header>
+
+  <!-- ===== STEP 0: イントロ ===== -->
+  <section id="intro" class="card fade">
+    <p class="lead">これは、点数で自分を「ジャッジする」ものではありません。<br>
+    今、目の前の良い瞬間や、過去の思い出、これから来る楽しみに、どのくらい心を向けられているか——あなたの<b>味わう力</b>を、お天気みたいに、そっと知るためのチェックです🌱</p>
+    <p class="lead soft">最近1〜2週間の自分を、ふんわり思い浮かべながら答えてみてください。正解はありません。ぱっと感じた方で大丈夫です🌷</p>
+
+    <p class="lead" style="margin-top:24px;margin-bottom:0;font-size:13.5px;color:var(--ink-soft)">今は、どのタイミングですか?</p>
+    <div class="phase-pick">
+      <button class="phase-btn" data-phase="before">
+        <span>🌱</span>講座を見る前
+        <small>これから学ぶ</small>
+      </button>
+      <button class="phase-btn" data-phase="after">
+        <span>🌼</span>講座を見た後
+        <small>学んで、しばらく経った</small>
+      </button>
+    </div>
+
+    <button class="start-btn" id="startBtn" disabled>はじめる</button>
+  </section>
+
+  <!-- ===== STEP 1: 質問 ===== -->
+  <section id="quiz" class="card hidden">
+    <p class="progress" id="progressText">1 / 10</p>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="q-tag" id="qTag"></span>
+    <p class="q-text" id="qText"></p>
+    <div class="scale" id="scale"></div>
+    <div class="nav">
+      <button class="back" id="backBtn" disabled>← もどる</button>
+      <span style="font-size:12px;color:var(--ink-soft)" id="navHint">選ぶと、次へ進みます</span>
+    </div>
+  </section>
+
+  <!-- ===== STEP 2: 結果 ===== -->
+  <section id="result" class="card hidden">
+    <div class="weather">
+      <span class="weather-icon" id="wIcon">🌤️</span>
+      <div class="score-big"><span id="scoreNum">0</span><span class="score-max">%</span></div>
+      <p class="score-cap">味わう力 セルフチェック スコア</p>
+      <p class="weather-title" id="wTitle"></p>
+      <p class="weather-msg" id="wMsg"></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="balance-h">いまの、3つのバランス</p>
+
+    <div class="gauge g-leaf">
+      <div class="gauge-top"><span class="gauge-name">🌿 いまを味わう力</span><span class="gauge-val" id="v1"></span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="g1"></div></div>
+    </div>
+    <div class="gauge g-gold">
+      <div class="gauge-top"><span class="gauge-name">🌅 思い出と、これからを味わう力</span><span class="gauge-val" id="v2"></span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="g2"></div></div>
+    </div>
+    <div class="gauge g-sky">
+      <div class="gauge-top"><span class="gauge-name">🌊 急がずにいられる力</span><span class="gauge-val" id="v3"></span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="g3"></div></div>
+    </div>
+
+    <div class="hint" id="hintBox"></div>
+
+    <div class="compare" id="compareBox">
+      <span id="compareText"></span>
+    </div>
+
+    <button class="result-btn" id="againBtn">もう一度、はじめから</button>
+  </section>
+
+  <footer>
+    🐢 ここ晴れ大学｜味わう力 セルフチェック（考え方の柱）<br>
+    このチェックは、Fred Bryant博士らの「味わう（Savoring）」に関する心理学研究（過去・いま・これからという3つの時間軸で味わう力）を参考に、ここ晴れがオリジナルで作成した10問の自己理解ツールです。診断・医療を目的としたものではありません。
+  </footer>
+
+</div>
+
+<script>
+/* ---------------- データ ---------------- */
+// pole: + はポジティブ要素そのまま採点 / - は逆転（あてはまらないほど高得点）
+// elem: 1=いまを味わう力(leaf) 2=思い出と、これからを味わう力(gold) 3=急がずにいられる力(sky)
+const QUESTIONS = [
+  { tag:"いまを味わう力", elem:1, pole:"+", text:"良い瞬間があると、立ち止まって味わうことがよくある。" },
+  { tag:"急がずにいられる力", elem:3, pole:"-", text:"毎日を急いで過ごしていて、楽しむ機会をたくさん逃しているのかもしれない。" },
+  { tag:"思い出と、これからを味わう力", elem:2, pole:"+", text:"過去の良い経験を、時間をかけて思い出すことがよくある。" },
+  { tag:"急がずにいられる力", elem:3, pole:"-", text:"良い経験をしていても、終わってしまうことが心配で、素直に楽しめないことがある。" },
+  { tag:"いまを味わう力", elem:1, pole:"+", text:"美味しい食事をするとき、あえてゆっくり味わうようにしている。" },
+  { tag:"思い出と、これからを味わう力", elem:2, pole:"+", text:"これから起こる良いことを想像して、楽しむことがよくある。" },
+  { tag:"いまを味わう力", elem:1, pole:"+", text:"美しいものや、心を打たれるようなものを見ると、ほとんどいつも立ち止まって味わう。" },
+  { tag:"急がずにいられる力", elem:3, pole:"-", text:"他のことを考えてしまって、心地よい経験を十分に味わいきれないことが多い。" },
+  { tag:"いまを味わう力", elem:1, pole:"+", text:"意識して立ち止まり、その瞬間を楽しむようにすることがとても多い。" },
+  { tag:"思い出と、これからを味わう力", elem:2, pole:"+", text:"過去の良い経験を、もっと味わうために、あえて思い出すことがある。" },
+];
+
+// 7件法（まったくそう思わない〜とてもそう思う）共通オプション
+const AGREE_OPTIONS = [
+  { label:"全くそう思わない", v:1 },
+  { label:"あまりそう思わない", v:2 },
+  { label:"ややそう思わない", v:3 },
+  { label:"どちらともいえない", v:4 },
+  { label:"ややそう思う", v:5 },
+  { label:"まあそう思う", v:6 },
+  { label:"とてもそう思う", v:7 },
+];
+
+/* ---------------- 状態 ---------------- */
+let phase = null;          // "before" / "after"
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+const $ = id => document.getElementById(id);
+
+/* ---------------- イントロ ---------------- */
+document.querySelectorAll(".phase-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".phase-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    phase = btn.dataset.phase;
+    $("startBtn").disabled = false;
+  });
+});
+
+$("startBtn").addEventListener("click",()=>{
+  $("intro").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("quiz").classList.add("fade");
+  render();
+});
+
+/* ---------------- 質問描画 ---------------- */
+function render(){
+  const q = QUESTIONS[idx];
+  const opts = q.options || AGREE_OPTIONS;
+  $("progressText").textContent = (idx+1)+" / "+QUESTIONS.length;
+  $("progressFill").style.width = ((idx)/QUESTIONS.length*100)+"%";
+  $("qTag").textContent = q.tag;
+  $("qText").textContent = q.text;
+
+  const scale = $("scale");
+  scale.innerHTML = "";
+  opts.forEach(o=>{
+    const b = document.createElement("button");
+    b.className = "opt" + (answers[idx]===o.v ? " sel":"");
+    b.textContent = o.label;
+    b.addEventListener("click",()=>{
+      answers[idx] = o.v;
+      setTimeout(next,180);
+    });
+    scale.appendChild(b);
+  });
+
+  $("backBtn").disabled = idx===0;
+  $("quiz").classList.remove("fade"); void $("quiz").offsetWidth; $("quiz").classList.add("fade");
+}
+
+function next(){
+  if(idx < QUESTIONS.length-1){ idx++; render(); }
+  else finish();
+}
+$("backBtn").addEventListener("click",()=>{ if(idx>0){ idx--; render(); }});
+
+/* ---------------- 採点 ---------------- */
+// 各設問は1〜7点の同じ尺度。逆転項目は (8 - v) で反転してから平均する。
+function scoreElement(elem){
+  let sum = 0, count = 0;
+  QUESTIONS.forEach((q,i)=>{
+    if(q.elem===elem){
+      const v = answers[i];
+      sum += (q.pole==="+") ? v : (8 - v);
+      count++;
+    }
+  });
+  return { sum, count, avg: sum / count }; // avg は 1〜7
+}
+
+function finish(){
+  const r1 = scoreElement(1), r2 = scoreElement(2), r3 = scoreElement(3);
+  const pct = avg => Math.round((avg-1)/6*100); // 1〜7 → 0〜100%
+  const overallPct = Math.round((pct(r1.avg)+pct(r2.avg)+pct(r3.avg))/3);
+
+  // ---- お天気判定 ----
+  let icon,title,msg;
+  if(overallPct >= 75){
+    icon="🌱"; title="しっかり味わえています";
+    msg="良い瞬間にも、過去の記憶にも、これからの楽しみにも、自然と心を向けられているようです。<br>この感覚を「忘れないように」と気負わなくても大丈夫。目の前には、ちゃんと味わえるものがあります。";
+  } else if(overallPct >= 50){
+    icon="🌤️"; title="味わえる日と、急いでしまう日と";
+    msg="立ち止まれる瞬間と、つい通り過ぎてしまう瞬間、その両方があるようです。それも、忙しい毎日の中では自然なことです。";
+  } else {
+    icon="🌧️"; title="今は、少し駆け足気味";
+    msg="今は、目の前の良いことに気づく余裕が、少し少ないのかもしれません。<br>でも、こうして立ち止まって自分を確かめてみたこと自体が、もう「味わう」練習の一歩です🌷";
+  }
+  $("wIcon").textContent = icon;
+  $("wTitle").textContent = title;
+  $("wMsg").innerHTML = msg;
+
+  // ---- 総合スコアをカウントアップ表示（%） ----
+  const scoreEl = $("scoreNum");
+  let shown = 0;
+  const step = Math.max(1, Math.round(overallPct/24));
+  const tick = setInterval(()=>{
+    shown += step;
+    if(shown >= overallPct){ shown = overallPct; clearInterval(tick); }
+    scoreEl.textContent = shown;
+  }, 28);
+
+  // ---- 3要素ゲージ ----
+  $("v1").textContent = r1.avg.toFixed(1)+" / 7";
+  $("v2").textContent = r2.avg.toFixed(1)+" / 7";
+  $("v3").textContent = r3.avg.toFixed(1)+" / 7";
+  setTimeout(()=>{
+    $("g1").style.width = pct(r1.avg)+"%";
+    $("g2").style.width = pct(r2.avg)+"%";
+    $("g3").style.width = pct(r3.avg)+"%";
+  },120);
+
+  // ---- 一番しぼんでいる要素へのヒント ----
+  const els = [
+    {n:1,v:r1.avg,name:"いまを味わう力",
+     work:"今日、何か一つだけ、味やにおい、景色をいつもより3秒長く感じてみてください。それだけで、味わう力は育ちはじめます。"},
+    {n:2,v:r2.avg,name:"思い出と、これからを味わう力",
+     work:"寝る前に、今日あった小さく良かったことを一つだけ思い出してみましょう。過去の良い記憶を味わうことも、立派な「味わう力」です。"},
+    {n:3,v:r3.avg,name:"急がずにいられる力",
+     work:"「終わってしまうのが怖い」「気が散ってしまう」——それも自然な反応です。まずは、良い瞬間に気づいたときだけ、深呼吸を一つしてみてください。"},
+  ];
+  const low = els.reduce((a,b)=> b.v < a.v ? b : a);
+  const high = els.reduce((a,b)=> b.v > a.v ? b : a);
+
+  if(low.v >= 5.5){
+    // 3要素すべてが十分に満ちている
+    $("hintBox").innerHTML =
+      "今は、3つのバランスが、どれもやわらかく満ちているみたいです🌷<br><br>"+
+      "この状態を「キープしなきゃ」とがんばらなくて大丈夫。"+
+      "天気は、またくもる日も来ます。そのときのために、"+
+      "「自分は、こんなふうに味わえていた」という記憶を、そっと持っておいてください🐢";
+  } else if(high.v - low.v <= 0.6){
+    // どれも同じくらい(差が小さい)
+    $("hintBox").innerHTML =
+      "3つの要素は、今、わりとそろって同じくらいのようです。<br><br>"+
+      "まずは気になったところから、少しずつ手を伸ばしてみてください。"+
+      "やってみると、「あ、これか」と腑に落ちる瞬間が、きっとあります🌱";
+  } else {
+    $("hintBox").innerHTML =
+      "今は <b>"+low.name+"</b> が、少ししぼみがちかもしれません。<br>"+
+      low.work+"<br><br>どれが欠けていても、大丈夫。それは「あなたが足りない」のではなく、"+
+      "「今、ここから育てていける」というサインです🌷";
+  }
+
+  // ---- 前後比較 ----
+  handleCompare(overallPct,r1.avg,r2.avg,r3.avg);
+
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  $("result").classList.add("fade");
+  $("progressFill").style.width = "100%";
+}
+
+/* ---------------- 前後比較（メモリ内のみ・任意保存ボタン） ---------------- */
+let savedSnapshot = null; // セッション内メモリのみ（ブラウザ保存はしない）
+
+function handleCompare(overallPct,e1,e2,e3){
+  const box = $("compareBox");
+  const cur = {phase,overallPct,e1,e2,e3};
+
+  if(phase==="before"){
+    box.innerHTML =
+      '<span>このあと講座を見て、しばらくしたら、もう一度ここに戻ってきてください。'+
+      '「講座を見た後」で測ると、味わう力の変化が見えてきます🌱<br><br>'+
+      '今の結果を覚えておきたい方は、下のボタンを押すと、この画面を開いている間だけ記録しておけます。</span>'+
+      '<br><button class="save" id="saveBtn">この結果を覚えておく</button>'+
+      '<div id="savedNote" class="prev-box hidden"></div>';
+    setTimeout(()=>{
+      $("saveBtn").addEventListener("click",()=>{
+        savedSnapshot = cur;
+        const n = $("savedNote");
+        n.classList.remove("hidden");
+        n.innerHTML = "🌱 「講座を見る前」の天気を、覚えました。<br>"+
+          "総合 "+overallPct+"%（いまを味わう力 "+e1.toFixed(1)+"・思い出と、これからを味わう力 "+e2.toFixed(1)+"・急がずにいられる力 "+e3.toFixed(1)+"）<br>"+
+          "<span style='color:var(--ink-soft);font-size:12px'>※この画面を閉じると消えます。スクリーンショットで残しておくのもおすすめです📸</span>";
+        $("saveBtn").textContent = "覚えました 🌷";
+        $("saveBtn").disabled = true;
+        $("saveBtn").style.opacity = .6;
+      });
+    },50);
+
+  } else { // after
+    if(savedSnapshot && savedSnapshot.phase==="before"){
+      const p = savedSnapshot;
+      const d = (now,bef)=>{
+        const diff = Math.round((now-bef)*10)/10;
+        if(diff>0)  return '<span class="delta-up">+'+diff+'</span>';
+        if(diff<0)  return '<span class="delta-flat">'+diff+'</span>';
+        return '<span class="delta-flat">±0</span>';
+      };
+      box.innerHTML =
+        '<span>🌼 「講座を見る前」とくらべてみました。</span>'+
+        '<div class="prev-box">'+
+          '<div class="row"><span>総合スコア</span><span>'+p.overallPct+'% → '+overallPct+'%　'+d(overallPct,p.overallPct)+'</span></div>'+
+          '<div class="row"><span>🌿 いまを味わう力</span><span>'+p.e1.toFixed(1)+' → '+e1.toFixed(1)+'　'+d(e1,p.e1)+'</span></div>'+
+          '<div class="row"><span>🌅 思い出と、これからを味わう力</span><span>'+p.e2.toFixed(1)+' → '+e2.toFixed(1)+'　'+d(e2,p.e2)+'</span></div>'+
+          '<div class="row"><span>🌊 急がずにいられる力</span><span>'+p.e3.toFixed(1)+' → '+e3.toFixed(1)+'　'+d(e3,p.e3)+'</span></div>'+
+        '</div>'+
+        '<span style="display:block;margin-top:12px">数字が増えていても、減っていても、変わらなくても——どれも、責めなくていい変化です。'+
+        '大事なのは「自分の変化に、気づけた」こと。それ自体が、もう「味わう」実践です🐢</span>';
+    } else {
+      box.innerHTML =
+        '<span>🌼 「講座を見た後」として測りました。<br>'+
+        '「講座を見る前」の結果がこの画面に残っていないので、今回は今の天気だけをお届けします。<br><br>'+
+        '次にやるときは、まず「講座を見る前」で測って結果を覚えておくと、変化が見えてきます🌱<br>'+
+        '<span style="color:var(--ink-soft);font-size:12px">※前回スクリーンショットを撮っていれば、それと見くらべてみてください📸</span></span>';
+    }
+  }
+}
+
+/* ---------------- やり直し ---------------- */
+$("againBtn").addEventListener("click",()=>{
+  idx=0; answers=new Array(QUESTIONS.length).fill(null);
+  $("result").classList.add("hidden");
+  $("intro").classList.remove("hidden");
+  $("intro").classList.add("fade");
+  $("startBtn").disabled = true;
+  document.querySelectorAll(".phase-btn").forEach(b=>b.classList.remove("active"));
+  phase=null;
+});
+</script>
+</body>
+</html>
