@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="CES-D英語版の独自日本語訳による、過去1週間のこころの状態を振り返る学習用セルフチェック。"><title>こころの状態セルフチェック（CES-D・独自訳）｜ここ晴れ大学</title><style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Kosugi+Maru&display=swap');
+
+  :root{
+    --sky:#9eafc0;
+    --sky-deep:#4e6881;
+    --leaf:#a9b9c8;
+    --leaf-deep:#4e6881;
+    --cream:#f5f8fb;
+    --paper:#ffffff;
+    --ink:#354554;
+    --ink-soft:#5b6d7e;
+    --line:#dce4eb;
+    --sun:#bdcbd8;
+    --shadow:rgba(78,104,129,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Zen Maru Gothic','Kosugi Maru',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, #e8eff5 0%, transparent 42%),
+      radial-gradient(circle at 88% 4%, #edf2f7 0%, transparent 40%),
+      var(--cream);
+    line-height:1.85;
+    padding:0 0 80px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px;}
+
+  /* ---- header ---- */
+  header{
+    text-align:center;
+    padding:54px 18px 30px;
+    position:relative;
+  }
+  .brand{
+    display:inline-block;
+    font-size:.82rem;
+    letter-spacing:.18em;
+    color:var(--sky-deep);
+    background:#e8eff5;
+    padding:6px 18px;
+    border-radius:999px;
+    margin-bottom:22px;
+    font-weight:700;
+  }
+  h1{
+    font-size:1.72rem;
+    font-weight:700;
+    line-height:1.5;
+    margin-bottom:14px;
+    letter-spacing:.02em;
+  }
+  h1 .turtle{display:inline-block;transform:translateY(2px);}
+  .lead{
+    font-size:.98rem;
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto;
+  }
+  .lead strong{color:var(--leaf-deep);font-weight:700;}
+
+  /* ---- intro card ---- */
+  .intro{
+    background:var(--paper);
+    border-radius:22px;
+    padding:26px 24px;
+    margin:30px 0 10px;
+    box-shadow:0 10px 30px var(--shadow);
+    border:1px solid var(--line);
+    font-size:.95rem;
+  }
+  .intro p+p{margin-top:12px;}
+  .intro .small{font-size:.82rem;color:var(--ink-soft);margin-top:16px;}
+
+  /* ---- scale legend (sticky) ---- */
+  .legend{
+    position:sticky;top:0;z-index:30;
+    background:rgba(245,248,251,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding:12px 18px;
+    margin:26px -18px 6px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:.78rem;color:var(--ink-soft);
+  }
+  .legend b{color:var(--sky-deep);}
+
+  /* ---- progress ---- */
+  .progress-shell{
+    position:sticky;top:46px;z-index:29;
+    height:5px;background:var(--line);
+    margin:0 -18px;
+  }
+  .progress-bar{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--sky),var(--leaf));
+    transition:width .3s ease;
+  }
+
+  /* ---- question ---- */
+  .q{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px 20px 16px;
+    margin:16px 0;
+    box-shadow:0 4px 14px rgba(78,104,129,.06);
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .q.answered{border-color:var(--leaf);box-shadow:0 4px 16px rgba(78,104,129,.14);}
+  .q-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .q-num{
+    flex:none;
+    width:30px;height:30px;border-radius:50%;
+    background:#e8eff5;color:var(--sky-deep);
+    font-size:.85rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .q.answered .q-num{background:var(--leaf-deep);color:#fff;}
+  .q-text{font-size:.97rem;padding-top:3px;}
+
+  .opts{
+    display:flex;gap:6px;justify-content:space-between;
+  }
+  .opt{flex:1;}
+  .opt input{position:absolute;opacity:0;width:0;height:0;}
+  .opt label{
+    display:flex;align-items:center;justify-content:center;
+    height:42px;border-radius:12px;
+    background:var(--cream);
+    border:1.5px solid var(--line);
+    cursor:pointer;font-size:.95rem;font-weight:500;
+    color:var(--ink-soft);
+    transition:all .15s;
+    user-select:none;
+  }
+  .opt label:hover{border-color:var(--sky);}
+  .opt input:checked+label{
+    background:var(--sky);border-color:var(--sky-deep);
+    color:#fff;font-weight:700;transform:scale(1.04);
+  }
+  .opt-ends{display:flex;justify-content:space-between;font-size:.72rem;color:var(--ink-soft);margin-top:7px;padding:0 2px;}
+
+  /* ---- button ---- */
+  .btn{
+    display:block;width:100%;
+    background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));
+    color:#fff;border:none;border-radius:16px;
+    padding:18px;font-size:1.08rem;font-weight:700;
+    font-family:inherit;cursor:pointer;
+    margin:30px 0 10px;
+    box-shadow:0 8px 22px rgba(78,104,129,.3);
+    transition:transform .15s,box-shadow .15s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(78,104,129,.4);}
+  .btn:disabled{background:#ccd6df;box-shadow:none;cursor:not-allowed;transform:none;}
+
+  .note-unanswered{
+    text-align:center;font-size:.85rem;color:#48647e;
+    margin-top:-2px;min-height:20px;
+  }
+
+  /* ---- results ---- */
+  #results{display:none;margin-top:18px;animation:fade .5s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  .res-head{text-align:center;margin-bottom:24px;}
+  .res-head h2{font-size:1.4rem;color:var(--sky-deep);margin-bottom:8px;}
+  .res-head p{font-size:.92rem;color:var(--ink-soft);}
+
+  .factor{
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:16px;padding:18px 20px;margin:14px 0;
+    box-shadow:0 4px 14px rgba(78,104,129,.06);
+  }
+  .factor-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+  .factor-name{font-weight:700;font-size:1.02rem;}
+  .factor-score{font-size:1.05rem;font-weight:700;color:var(--leaf-deep);}
+  .factor-score span{font-size:.78rem;color:var(--ink-soft);font-weight:400;}
+  .factor-desc{font-size:.85rem;color:var(--ink-soft);margin-bottom:12px;}
+  .meter{height:10px;border-radius:999px;background:var(--line);overflow:hidden;}
+  .meter-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--sky),var(--leaf));transition:width 1s ease;width:0;}
+
+  .reverse-tag{
+    font-size:.68rem;color:var(--sky-deep);background:#e8eff5;
+    padding:2px 8px;border-radius:6px;margin-left:8px;vertical-align:middle;
+  }
+
+  .closing{
+    background:linear-gradient(135deg,#e8eff5,#edf2f7);
+    border-radius:20px;padding:26px 24px;margin:24px 0 10px;
+    font-size:.94rem;text-align:center;
+  }
+  .closing h3{font-size:1.05rem;margin-bottom:10px;color:var(--leaf-deep);}
+
+  .btn-ghost{
+    background:transparent;color:var(--sky-deep);
+    border:1.5px solid var(--sky);box-shadow:none;
+    margin-top:0;
+  }
+  .btn-ghost:hover{background:#e8eff5;transform:none;box-shadow:none;}
+
+  /* ---- footer / citation ---- */
+  footer{
+    margin-top:40px;padding:24px 22px;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:16px;font-size:.78rem;color:var(--ink-soft);
+    line-height:1.7;
+  }
+  footer b{color:var(--ink);}
+  footer a{color:var(--sky-deep);word-break:break-all;}
+
+  @media(max-width:480px){
+    h1{font-size:1.42rem;}
+    .opt label{height:40px;font-size:.9rem;}
+    .q{padding:18px 15px 14px;}
+  }
+
+:root{--sky-deep:#48647e;--leaf-deep:#48647e;--ink-soft:#5b6b7b;}
+header{padding-top:38px;padding-bottom:12px}
+.brand{font-size:.9rem}
+.intro{margin-top:18px}
+.intro .small,footer,.opt-ends{font-size:.875rem}
+.legend{font-size:.875rem;position:static;margin:22px 0 6px;border:0;background:transparent;padding:0}
+.progress-shell{position:static;margin:0;border-radius:999px;overflow:hidden}
+.q{min-width:0;padding:22px}
+.q legend{float:left;width:100%;margin-bottom:18px}
+.q legend+.opts{clear:both}
+.q-text{font-size:1rem}
+.opt{position:relative}
+.opt input{width:1px;height:1px}
+.opt input:focus-visible+label{outline:3px solid var(--sky-deep);outline-offset:3px}
+.opt label{height:48px;color:var(--ink);font-size:1rem}
+.opt input:checked+label{background:var(--sky-deep)}
+.opt-ends span{max-width:46%}
+.opt-ends span:last-child{text-align:right}
+.btn{background:var(--leaf-deep)}
+.btn-ghost{background:transparent;color:var(--sky-deep)}
+[hidden]{display:none!important}
+#results{display:block}
+.score-card{background:white;border:1px solid var(--line);border-radius:22px;padding:28px;text-align:center}
+.score-label{color:var(--ink-soft)}
+.score-value{font-size:3.4rem;font-weight:700;line-height:1.4;color:var(--sky-deep)}
+.score-value small{font-size:1rem;color:var(--ink-soft);font-weight:400}
+.score-scale{display:flex;justify-content:space-between;font-size:.875rem;color:var(--ink-soft);margin-top:8px}
+.score-date{font-size:.875rem;color:var(--ink-soft);margin-bottom:18px}
+details{margin-top:20px;text-align:left;font-size:.875rem}
+summary{cursor:pointer;color:var(--sky-deep)}
+details p{margin-top:10px}
+.result-note{font-size:.95rem;margin-top:18px;text-align:left}
+.result-actions{display:flex;gap:12px;margin-top:18px}
+.result-actions .btn{margin:0;font-size:1rem;padding:14px}
+footer p+p{margin-top:10px}
+.note-unanswered{color:#48647e;margin-top:18px}
+h2:focus{outline:none}
+@media(max-width:480px){.q{padding:18px 14px}.opts{gap:5px}.opt label{height:44px}.result-actions{flex-direction:column}header{padding-left:0;padding-right:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{body{background:white;padding:0}.wrap{max-width:none}header{padding:12px}.intro,#quiz,.legend,.progress-shell,#calcBtn,#noteUnanswered,.result-actions{display:none}.closing{background:white}footer{margin-top:20px}#results[hidden]{display:none}}
+
+.choice-days{display:block;font-size:.8rem;font-weight:400;margin-top:2px}
+.opt label{height:auto;min-height:64px;flex-direction:column;padding:6px 2px}
+.response-key{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
+.response-key div{background:var(--cream);border-radius:10px;padding:10px 4px;text-align:center;font-size:.875rem}
+.response-key b{display:block;color:var(--sky-deep);font-size:1.1rem}
+.translation-note{border-left:3px solid var(--sky);padding-left:12px}
+.interpretation{margin-top:20px;text-align:left;background:var(--cream);padding:18px;border-radius:14px}
+.interpretation h3{font-size:1.05rem;margin-bottom:8px}
+.interpretation p+p{margin-top:10px}
+@media(max-width:480px){.response-key{gap:5px}.response-key div{font-size:.8rem}.opt label{min-height:60px}}
+</style></head><body><main class="wrap">
+<header><span class="brand">🐢 ここ晴れ大学</span><h1>こころの状態セルフチェック</h1><p class="lead"><strong>この1週間の気分や過ごし方</strong>を、20の問いで振り返ってみましょう。</p></header>
+<div class="intro">
+<p>このチェックは、<b>CES-D（抑うつ症状をたずねる尺度）</b>の英語版を日本語に訳したものです。気分の落ち込みや、食欲・睡眠などの状態を振り返ります。</p>
+<p><b>過去1週間</b>に、それぞれの状態が何日くらいあったか、最も近い選択肢を選んでください。正解や不正解はありません。</p>
+<div class="response-key" aria-label="回答の選択肢"><div><b>0</b>1日未満</div><div><b>1</b>1〜2日</div><div><b>2</b>3〜4日</div><div><b>3</b>5〜7日</div></div>
+<p class="small translation-note">このページは、添付書籍の英語版に基づく独自の日本語訳です。信頼性・妥当性が検証された正式な日本語版ではなく、診断や研究のための検査としては使えません。</p>
+<p class="small">回答と結果はこのページ内だけで扱い、送信・保存しません。ページを閉じると消えるため、残したい場合は結果を印刷するか、スクリーンショットで記録してください。</p>
+</div>
+<div class="legend"><span>回答の進み具合</span><b id="progressText" role="status">0 / 20 問</b></div>
+<div class="progress-shell" role="progressbar" aria-label="回答の進み具合" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="progressShell"><div class="progress-bar" id="progress"></div></div>
+<form id="quiz"><div id="questions"></div><p class="note-unanswered" id="noteUnanswered" role="status"></p><button class="btn" id="calcBtn" type="submit">結果をみる</button></form>
+<section id="results" hidden aria-labelledby="resultTitle">
+<div class="res-head"><h2 id="resultTitle" tabindex="-1">この1週間の振り返り</h2><p>今のこころをいたわるための、ひとつの手がかりです。</p></div>
+<div class="score-card"><p class="score-label">CES-Dの採点方法による合計点</p><p class="score-value"><span id="score"></span><small> / 60</small></p><p class="score-date" id="resultDate"></p>
+<p class="result-note">点数が高いほど、抑うつに関連する状態を多く経験したことを表します。この独自訳の点数だけで、うつ病の有無や重症度を判断することはできません。</p>
+<div class="interpretation"><h3 id="interpretationTitle"></h3><p id="interpretationText"></p><p>点数にかかわらず、つらさが続いている、眠れない、日常生活に支障があるときは、医療機関やカウンセラーなどに相談してください。</p></div>
+<details><summary>点数の計算方法</summary><p>4・8・12・16問目は、前向きな気持ちについてたずねる逆転項目です。回答を「3 − 回答」に置き換え、20問の点数を合計しています（0〜60点）。</p><p id="formula"></p></details>
+<details><summary>原版の「16点」という目安について</summary><p>原版CES-Dでは、16点以上が、追加の評価を検討するスクリーニングの目安として使われます。診断の基準ではなく、対象集団によって適切な基準も変わります。</p><p>このページの独自の日本語訳について、その基準が同じように使えるかは検証されていません。原版の目安は参考情報としてのみ示しています。</p></details>
+</div>
+<div class="closing"><h3>ひとりで抱えなくて大丈夫 🐢</h3><p>つらさを言葉にすることや、助けを求めることも、自分を大切にする一歩です。数字よりも、今のあなたが感じていることを大切にしてください。</p></div>
+<div class="result-actions"><button class="btn btn-ghost" id="printBtn" type="button">結果を印刷・PDFにする</button><button class="btn btn-ghost" id="resetBtn" type="button">もう一度やってみる</button></div>
+</section>
+<footer><p><b>出典・尺度について</b></p><p>Center for Epidemiologic Studies Depression Scale（CES-D，20項目）。添付の <i>The How of Happiness</i> 掲載英語版を日本語に翻訳しました。日本語の質問文は独自訳であり、日本版CES-D（島悟）の質問文は使用していません。</p><p>Radloff, L. S. (1977). The CES-D Scale: A self-report depression scale for research in the general population. <i>Applied Psychological Measurement, 1</i>(3), 385–401. <a href="https://doi.org/10.1177/014662167700100306" target="_blank" rel="noopener noreferrer">原版の論文</a></p><p><a href="https://www.apa.org/pi/about/publications/caregivers/practice-settings/assessment/tools/depression-scale" target="_blank" rel="noopener noreferrer">米国心理学会（APA）：尺度と得点の説明</a> ／ <a href="https://www.apa.org/depression-guideline/assessment/" target="_blank" rel="noopener noreferrer">原版の利用について</a></p><p>英語原版はパブリックドメインとして公開されています。本ページは、自己理解のための学習用ツールです。</p></footer>
+</main><script>
+'use strict';
+const items = ["普段は気にならないことが、気になった。", "食べる気がせず、食欲がなかった。", "家族や友人に助けてもらっても、気分の落ち込みが消えないと感じた。", "自分は、ほかの人と同じくらいよいところのある人間だと感じた。", "していることに集中し続けるのが難しかった。", "気分が落ち込んでいた。", "何をするにも、ひと苦労だと感じた。", "将来に希望を感じた。", "自分の人生は失敗だったと思った。", "怖さを感じた。", "落ち着いて眠れなかった。", "幸せだと感じた。", "普段より口数が少なかった。", "孤独を感じた。", "周りの人が、よそよそしかった。", "生活を楽しんだ。", "泣くことがあった。", "悲しいと感じた。", "周りの人に嫌われていると感じた。", "何かを始めようとしても、動き出せなかった。"];
+const reverseItems = new Set([4,8,12,16]);
+const days=['1日未満','1〜2日','3〜4日','5〜7日'];
+const quiz=document.getElementById('quiz'),results=document.getElementById('results'),note=document.getElementById('noteUnanswered'),calc=document.getElementById('calcBtn');
+items.forEach((text,i)=>{
+ const n=i+1,card=document.createElement('fieldset');card.className='q';card.id='q'+n;
+ let options='';for(let v=0;v<=3;v++)options+='<div class="opt"><input type="radio" name="q'+n+'" id="q'+n+'_'+v+'" value="'+v+'" aria-label="'+v+'：'+days[v]+'"><label for="q'+n+'_'+v+'"><span>'+v+'</span><span class="choice-days">'+days[v]+'</span></label></div>';
+ card.innerHTML='<legend><span class="q-head"><span class="q-num">'+n+'</span><span class="q-text">'+text+'</span></span></legend><div class="opts">'+options+'</div>';
+ document.getElementById('questions').appendChild(card);
+});
+function answers(){return items.map((_,i)=>{const el=quiz.querySelector('input[name="q'+(i+1)+'"]:checked');return el?Number(el.value):null;});}
+function calculateScore(values){
+ if(values.length!==20||values.some(v=>!Number.isInteger(v)||v<0||v>3))throw new Error('Invalid answers');
+ return values.reduce((sum,v,i)=>sum+(reverseItems.has(i+1)?3-v:v),0);
+}
+quiz.addEventListener('change',()=>{
+ const values=answers(),done=values.filter(v=>v!==null).length;
+ document.querySelectorAll('.q').forEach((card,i)=>card.classList.toggle('answered',values[i]!==null));
+ document.getElementById('progress').style.width=done/20*100+'%';
+ document.getElementById('progressText').textContent=done+' / 20 問';
+ document.getElementById('progressShell').setAttribute('aria-valuenow',done);
+ note.textContent=done===20?'すべて回答できました':'あと '+(20-done)+' 問';
+ results.hidden=true;calc.hidden=false;
+});
+quiz.addEventListener('submit',event=>{
+ event.preventDefault();const values=answers(),missing=values.indexOf(null);
+ if(missing!==-1){note.textContent='まだ回答していない問いがあります（問 '+(missing+1)+'）';const card=document.getElementById('q'+(missing+1));card.scrollIntoView({behavior:'smooth',block:'center'});card.querySelector('input').focus({preventScroll:true});return;}
+ const score=calculateScore(values);document.getElementById('score').textContent=score;
+ document.getElementById('resultDate').textContent='回答日：'+new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'long',day:'numeric'}).format(new Date());
+ document.getElementById('formula').textContent='今回の計算：'+values.map((v,i)=>reverseItems.has(i+1)?3-v:v).join(' + ')+' = '+score;
+ document.getElementById('interpretationTitle').textContent=score>=16?'今のつらさを、誰かに話してみませんか':'今の気持ちを、引き続き大切に';
+ document.getElementById('interpretationText').textContent=score>=16?'原版で追加の評価を検討する目安とされる16点以上の数値でした。この独自訳では診断的な意味は確かめられていませんが、気になる状態があれば、専門家と一緒に振り返るきっかけにしてください。':'原版でよく使われる16点という目安を下回る数値でした。ただし、この独自訳では診断的な意味は確かめられておらず、つらさがないことや、うつ病ではないことを保証する結果ではありません。';
+ results.hidden=false;calc.hidden=true;note.textContent='';document.getElementById('resultTitle').focus({preventScroll:true});results.scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+document.getElementById('resetBtn').addEventListener('click',()=>{quiz.reset();quiz.dispatchEvent(new Event('change'));note.textContent='';document.getElementById('q1').querySelector('input').focus();window.scrollTo({top:0,behavior:'smooth'});});
+</script></body></html>
