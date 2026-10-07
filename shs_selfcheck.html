@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="4つの問いを通して、今の主観的な幸福感を確かめるセルフチェック。ここ晴れ大学。">
+<title>幸福感セルフチェック（SHS）｜ここ晴れ大学</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Kosugi+Maru&display=swap');
+
+  :root{
+    --sky:#e6a7bb;
+    --sky-deep:#a1496b;
+    --leaf:#dca0b8;
+    --leaf-deep:#a1496b;
+    --cream:#fff8fb;
+    --paper:#ffffff;
+    --ink:#493b42;
+    --ink-soft:#74636d;
+    --line:#eedbe3;
+    --sun:#f0bfd1;
+    --shadow:rgba(161,73,107,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Zen Maru Gothic','Kosugi Maru',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, #fcebf2 0%, transparent 42%),
+      radial-gradient(circle at 88% 4%, #fff1f6 0%, transparent 40%),
+      var(--cream);
+    line-height:1.85;
+    padding:0 0 80px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px;}
+
+  /* ---- header ---- */
+  header{
+    text-align:center;
+    padding:54px 18px 30px;
+    position:relative;
+  }
+  .brand{
+    display:inline-block;
+    font-size:.82rem;
+    letter-spacing:.18em;
+    color:var(--sky-deep);
+    background:#fcebf2;
+    padding:6px 18px;
+    border-radius:999px;
+    margin-bottom:22px;
+    font-weight:700;
+  }
+  h1{
+    font-size:1.72rem;
+    font-weight:700;
+    line-height:1.5;
+    margin-bottom:14px;
+    letter-spacing:.02em;
+  }
+  h1 .turtle{display:inline-block;transform:translateY(2px);}
+  .lead{
+    font-size:.98rem;
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto;
+  }
+  .lead strong{color:var(--leaf-deep);font-weight:700;}
+
+  /* ---- intro card ---- */
+  .intro{
+    background:var(--paper);
+    border-radius:22px;
+    padding:26px 24px;
+    margin:30px 0 10px;
+    box-shadow:0 10px 30px var(--shadow);
+    border:1px solid var(--line);
+    font-size:.95rem;
+  }
+  .intro p+p{margin-top:12px;}
+  .intro .small{font-size:.82rem;color:var(--ink-soft);margin-top:16px;}
+
+  /* ---- scale legend (sticky) ---- */
+  .legend{
+    position:sticky;top:0;z-index:30;
+    background:rgba(255,248,251,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding:12px 18px;
+    margin:26px -18px 6px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:.78rem;color:var(--ink-soft);
+  }
+  .legend b{color:var(--sky-deep);}
+
+  /* ---- progress ---- */
+  .progress-shell{
+    position:sticky;top:46px;z-index:29;
+    height:5px;background:var(--line);
+    margin:0 -18px;
+  }
+  .progress-bar{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--sky),var(--leaf));
+    transition:width .3s ease;
+  }
+
+  /* ---- question ---- */
+  .q{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px 20px 16px;
+    margin:16px 0;
+    box-shadow:0 4px 14px rgba(161,73,107,.06);
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .q.answered{border-color:var(--leaf);box-shadow:0 4px 16px rgba(161,73,107,.14);}
+  .q-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .q-num{
+    flex:none;
+    width:30px;height:30px;border-radius:50%;
+    background:#fcebf2;color:var(--sky-deep);
+    font-size:.85rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .q.answered .q-num{background:var(--leaf-deep);color:#fff;}
+  .q-text{font-size:.97rem;padding-top:3px;}
+
+  .opts{
+    display:flex;gap:6px;justify-content:space-between;
+  }
+  .opt{flex:1;}
+  .opt input{position:absolute;opacity:0;width:0;height:0;}
+  .opt label{
+    display:flex;align-items:center;justify-content:center;
+    height:42px;border-radius:12px;
+    background:var(--cream);
+    border:1.5px solid var(--line);
+    cursor:pointer;font-size:.95rem;font-weight:500;
+    color:var(--ink-soft);
+    transition:all .15s;
+    user-select:none;
+  }
+  .opt label:hover{border-color:var(--sky);}
+  .opt input:checked+label{
+    background:var(--sky);border-color:var(--sky-deep);
+    color:#fff;font-weight:700;transform:scale(1.04);
+  }
+  .opt-ends{display:flex;justify-content:space-between;font-size:.72rem;color:var(--ink-soft);margin-top:7px;padding:0 2px;}
+
+  /* ---- button ---- */
+  .btn{
+    display:block;width:100%;
+    background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));
+    color:#fff;border:none;border-radius:16px;
+    padding:18px;font-size:1.08rem;font-weight:700;
+    font-family:inherit;cursor:pointer;
+    margin:30px 0 10px;
+    box-shadow:0 8px 22px rgba(161,73,107,.3);
+    transition:transform .15s,box-shadow .15s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(161,73,107,.4);}
+  .btn:disabled{background:#dbcbd2;box-shadow:none;cursor:not-allowed;transform:none;}
+
+  .note-unanswered{
+    text-align:center;font-size:.85rem;color:#914461;
+    margin-top:-2px;min-height:20px;
+  }
+
+  /* ---- results ---- */
+  #results{display:none;margin-top:18px;animation:fade .5s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  .res-head{text-align:center;margin-bottom:24px;}
+  .res-head h2{font-size:1.4rem;color:var(--sky-deep);margin-bottom:8px;}
+  .res-head p{font-size:.92rem;color:var(--ink-soft);}
+
+  .factor{
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:16px;padding:18px 20px;margin:14px 0;
+    box-shadow:0 4px 14px rgba(161,73,107,.06);
+  }
+  .factor-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+  .factor-name{font-weight:700;font-size:1.02rem;}
+  .factor-score{font-size:1.05rem;font-weight:700;color:var(--leaf-deep);}
+  .factor-score span{font-size:.78rem;color:var(--ink-soft);font-weight:400;}
+  .factor-desc{font-size:.85rem;color:var(--ink-soft);margin-bottom:12px;}
+  .meter{height:10px;border-radius:999px;background:var(--line);overflow:hidden;}
+  .meter-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--sky),var(--leaf));transition:width 1s ease;width:0;}
+
+  .reverse-tag{
+    font-size:.68rem;color:var(--sky-deep);background:#fcebf2;
+    padding:2px 8px;border-radius:6px;margin-left:8px;vertical-align:middle;
+  }
+
+  .closing{
+    background:linear-gradient(135deg,#fcebf2,#fff1f6);
+    border-radius:20px;padding:26px 24px;margin:24px 0 10px;
+    font-size:.94rem;text-align:center;
+  }
+  .closing h3{font-size:1.05rem;margin-bottom:10px;color:var(--leaf-deep);}
+
+  .btn-ghost{
+    background:transparent;color:var(--sky-deep);
+    border:1.5px solid var(--sky);box-shadow:none;
+    margin-top:0;
+  }
+  .btn-ghost:hover{background:#fcebf2;transform:none;box-shadow:none;}
+
+  /* ---- footer / citation ---- */
+  footer{
+    margin-top:40px;padding:24px 22px;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:16px;font-size:.78rem;color:var(--ink-soft);
+    line-height:1.7;
+  }
+  footer b{color:var(--ink);}
+  footer a{color:var(--sky-deep);word-break:break-all;}
+
+  @media(max-width:480px){
+    h1{font-size:1.42rem;}
+    .opt label{height:40px;font-size:.9rem;}
+    .q{padding:18px 15px 14px;}
+  }
+
+:root{--sky-deep:#984466;--leaf-deep:#984466;--ink-soft:#6e5c66;}
+header{padding-top:38px;padding-bottom:12px}
+.brand{font-size:.9rem}
+.intro{margin-top:18px}
+.intro .small,footer,.opt-ends{font-size:.875rem}
+.legend{font-size:.875rem;position:static;margin:22px 0 6px;border:0;background:transparent;padding:0}
+.progress-shell{position:static;margin:0;border-radius:999px;overflow:hidden}
+.q{min-width:0;padding:22px}
+.q legend{float:left;width:100%;margin-bottom:18px}
+.q legend+.opts{clear:both}
+.q-text{font-size:1rem}
+.opt{position:relative}
+.opt input{width:1px;height:1px}
+.opt input:focus-visible+label{outline:3px solid var(--sky-deep);outline-offset:3px}
+.opt label{height:48px;color:var(--ink);font-size:1rem}
+.opt input:checked+label{background:var(--sky-deep)}
+.opt-ends span{max-width:46%}
+.opt-ends span:last-child{text-align:right}
+.btn{background:var(--leaf-deep)}
+.btn-ghost{background:transparent;color:var(--sky-deep)}
+[hidden]{display:none!important}
+#results{display:block}
+.score-card{background:white;border:1px solid var(--line);border-radius:22px;padding:28px;text-align:center}
+.score-label{color:var(--ink-soft)}
+.score-value{font-size:3.4rem;font-weight:700;line-height:1.4;color:var(--sky-deep)}
+.score-value small{font-size:1rem;color:var(--ink-soft);font-weight:400}
+.score-scale{display:flex;justify-content:space-between;font-size:.875rem;color:var(--ink-soft);margin-top:8px}
+.score-date{font-size:.875rem;color:var(--ink-soft);margin-bottom:18px}
+details{margin-top:20px;text-align:left;font-size:.875rem}
+summary{cursor:pointer;color:var(--sky-deep)}
+details p{margin-top:10px}
+.result-note{font-size:.95rem;margin-top:18px;text-align:left}
+.result-actions{display:flex;gap:12px;margin-top:18px}
+.result-actions .btn{margin:0;font-size:1rem;padding:14px}
+footer p+p{margin-top:10px}
+.note-unanswered{color:#914461;margin-top:18px}
+h2:focus{outline:none}
+@media(max-width:480px){.q{padding:18px 14px}.opts{gap:5px}.opt label{height:44px}.result-actions{flex-direction:column}header{padding-left:0;padding-right:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{body{background:white;padding:0}.wrap{max-width:none}header{padding:12px}.intro,#quiz,.legend,.progress-shell,#calcBtn,#noteUnanswered,.result-actions{display:none}.closing{background:white}footer{margin-top:20px}#results[hidden]{display:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+<span class="brand">🐢 ここ晴れ大学</span>
+<h1>幸福感セルフチェック <span aria-hidden="true">🌷</span></h1>
+<p class="lead">4つの問いを通して、<strong>今の自分が感じている幸せ</strong>を、そっと確かめてみましょう。</p>
+</header>
+<div class="intro">
+<p>このチェックは、<b>主観的幸福感尺度（Subjective Happiness Scale：SHS）</b>を使っています。主観的幸福感とは、自分自身が「どれくらい幸せだと感じているか」ということ。</p>
+<p>正解や不正解はありません。普段の自分を思い浮かべて、いちばん近い数字を選んでください。<b>数字の両端の意味は、問いごとに異なります。</b></p>
+<p class="small">全4問・目安1〜2分。回答と結果はこのページ内だけで扱い、送信・保存しません。ページを閉じると消えるため、残したい場合は結果を印刷するか、スクリーンショットで記録してください。</p>
+</div>
+<div class="legend"><span>回答の進み具合</span><b id="progressText" role="status">0 / 4 問</b></div>
+<div class="progress-shell" role="progressbar" aria-label="回答の進み具合" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="progressShell"><div class="progress-bar" id="progress"></div></div>
+<form id="quiz">
+<div id="questions"></div>
+<p class="note-unanswered" id="noteUnanswered" role="status"></p>
+<button class="btn" id="calcBtn" type="submit">結果をみる 🌷</button>
+</form>
+<section id="results" hidden aria-labelledby="resultTitle">
+<div class="res-head"><h2 id="resultTitle" tabindex="-1">今のあなたの幸福感スコア</h2><p>今の自分を知るための、ひとつの手がかりです。</p></div>
+<div class="score-card">
+<p class="score-label">主観的幸福感（SHS）</p>
+<p class="score-value"><span id="score"></span><small> / 7</small></p>
+<p class="score-date" id="resultDate"></p>
+<div class="meter"><div class="meter-fill" id="scoreMeter"></div></div>
+<div class="score-scale"><span>1</span><span>7</span></div>
+<p class="result-note">スコアは1〜7の範囲で、数値が高いほど、主観的な幸福感が高いことを表します。このチェックだけで、心の健康状態やうつ病を判断することはできません。</p>
+<details><summary>スコアの計算方法</summary><p>第4問は逆転項目です。第4問の回答を「8 − 回答」に置き換え、4問の平均を求めています。</p><p id="formula"></p><p>添付書籍の第4問は、1と7の意味が逆に並んでいます。このページでは日本語版の形式に合わせ、1＝「まったくない」、7＝「とてもある」とし、計算で反転しています。</p></details>
+<details><summary>研究で報告された平均値について</summary><p>日本語版の開発研究では、日本の大学生364人の平均は4.68でした（島井ほか，2004）。特定の集団の値であり、日本人全体の平均や、幸せ・不幸せを分ける基準ではありません。</p><p>年齢や生活状況、文化などが異なると、平均値も変わります。他の人との順位よりも、自分自身の変化を振り返る手がかりとして受け取ってみてください。</p></details>
+</div>
+<div class="closing"><h3>どんな数字でも、ここから 🐢</h3><p>この数字が、あなたの価値や人生のすべてを決めるわけではありません。今の気持ちに気づいたことを、自分をいたわるきっかけにしてみませんか。</p></div>
+<div class="result-actions"><button class="btn btn-ghost" id="printBtn" type="button">結果を印刷・PDFにする</button><button class="btn btn-ghost" id="resetBtn" type="button">もう一度やってみる</button></div>
+</section>
+<footer>
+<p><b>出典・尺度について</b></p>
+<p>質問文と回答の両端の表現は、島井ほか（2004）の日本版SHSに基づいています（括弧・句読点の表記を整えています）。結果の説明は、セルフチェック用に作成したものです。</p>
+<p>Lyubomirsky, S., &amp; Lepper, H. (1999). A measure of subjective happiness: Preliminary reliability and construct validation. <i>Social Indicators Research, 46</i>, 137–155. <a href="https://doi.org/10.1023/A:1006824100041" target="_blank" rel="noopener noreferrer">原版の論文</a></p>
+<p>島井哲志・大竹恵子・宇津木成介・池見陽・Sonja Lyubomirsky（2004）．日本版主観的幸福感尺度（Subjective Happiness Scale: SHS）の信頼性と妥当性の検討．<i>日本公衆衛生雑誌，51</i>（10），845–853．<a href="https://doi.org/10.11236/jph.51.10_845" target="_blank" rel="noopener noreferrer">日本語版の論文</a></p>
+<p>原著者は非商用目的での尺度の利用を認めています。<a href="https://sonjalyubomirsky.com/publications/" target="_blank" rel="noopener noreferrer">原著者の尺度案内・利用条件</a></p>
+</footer>
+</main>
+<script>
+'use strict';
+const items = [
+{ text: '全般的にみて、わたしは自分のことを（　）であると考えている。', low: '非常に不幸', high: '非常に幸福' },
+{ text: 'わたしは、自分と同年輩の人と比べて、自分を（　）であると考えている。', low: 'より不幸な人間', high: 'より幸福な人間' },
+{ text: '全般的にみて、非常に幸福な人たちがいます。この人たちは、どんな状況のなかでも、そこで最良のものをみつけて、人生を楽しむ人たちです。あなたは、どの程度、そのような特徴をもっていますか？', low: 'まったくない', high: 'とてもある' },
+{ text: '全般的にみて、非常に不幸な人たちがいます。この人たちは、うつ状態にあるわけではないのに、はたから考えるよりも、まったく幸せではないようです。あなたは、どの程度、そのような特徴をもっていますか？', low: 'まったくない', high: 'とてもある' }
+];
+const quiz = document.getElementById('quiz');
+const results = document.getElementById('results');
+const note = document.getElementById('noteUnanswered');
+const calc = document.getElementById('calcBtn');
+const questions = document.getElementById('questions');
+items.forEach((item, index) => {
+ const n = index + 1;
+ const card = document.createElement('fieldset');
+ card.className = 'q'; card.id = 'q'+n;
+ let options = '';
+ for(let v=1;v<=7;v++) {
+  const anchor = v===1 ? '：'+item.low : v===7 ? '：'+item.high : '';
+  options += '<div class="opt"><input type="radio" name="q'+n+'" id="q'+n+'_'+v+'" value="'+v+'" aria-label="'+v+anchor+'" aria-describedby="ends'+n+'"><label for="q'+n+'_'+v+'">'+v+'</label></div>';
+ }
+ card.innerHTML = '<legend><span class="q-head"><span class="q-num">'+n+'</span><span class="q-text">'+item.text+'</span></span></legend><div class="opts">'+options+'</div><div class="opt-ends" id="ends'+n+'"><span>1：'+item.low+'</span><span>7：'+item.high+'</span></div>';
+ questions.appendChild(card);
+});
+function answers() {
+ return items.map((_,i) => {
+  const input = quiz.querySelector('input[name="q'+(i+1)+'"]:checked');
+  return input ? Number(input.value) : null;
+ });
+}
+function calculateScore(values) {
+ if(values.length!==4 || values.some(v=>!Number.isInteger(v)||v<1||v>7)) throw new Error('Invalid answers');
+ return (values[0]+values[1]+values[2]+8-values[3])/4;
+}
+quiz.addEventListener('change', () => {
+ const values = answers();
+ const done = values.filter(v=>v!==null).length;
+ document.querySelectorAll('.q').forEach((card,i)=>card.classList.toggle('answered',values[i]!==null));
+ document.getElementById('progress').style.width = done/4*100+'%';
+ document.getElementById('progressText').textContent = done+' / 4 問';
+ document.getElementById('progressShell').setAttribute('aria-valuenow',done);
+ note.textContent = done===4 ? 'すべて回答できました 🌱' : 'あと '+(4-done)+' 問';
+ results.hidden = true; calc.hidden = false;
+});
+quiz.addEventListener('submit', event => {
+ event.preventDefault();
+ const values = answers();
+ const missing = values.indexOf(null);
+ if(missing!==-1) {
+  note.textContent = 'まだ回答していない問いがあります（問 '+(missing+1)+'）';
+  const card = document.getElementById('q'+(missing+1));
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+  card.querySelector('input').focus({preventScroll:true}); return;
+ }
+ const score = calculateScore(values);
+ document.getElementById('score').textContent = score.toFixed(2);
+ document.getElementById('formula').textContent = '今回の計算：('+values[0]+' + '+values[1]+' + '+values[2]+' + '+(8-values[3])+') ÷ 4 = '+score.toFixed(2);
+ document.getElementById('resultDate').textContent = '回答日：'+new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'long',day:'numeric'}).format(new Date());
+ results.hidden = false; calc.hidden = true; note.textContent = '';
+ document.getElementById('scoreMeter').style.width = (score-1)/6*100+'%';
+ document.getElementById('resultTitle').focus({preventScroll:true});
+ results.scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+document.getElementById('resetBtn').addEventListener('click',()=>{
+ quiz.reset(); quiz.dispatchEvent(new Event('change'));
+ note.textContent = ''; document.getElementById('q1').querySelector('input').focus();
+ window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+</body>
+</html>
